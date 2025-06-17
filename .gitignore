@@ -1,0 +1,45 @@
+# Common Lisp specific
+*.fasl
+*.fas
+*.lib
+*.o
+*.dx64fsl
+*.dx32fsl
+*.lx64fsl
+*.lx32fsl
+*.x86f
+*.dfsl
+*.d64fsl
+*.p64fsl
+*.sx64fsl
+*.wx64fsl
+*.wx32fsl
+*.sfsl
+*.dfsl
+*.pfsl
+*.d64fsl
+*.p64fsl
+*.lx64fsl
+
+# Editor files
+*~
+\#*\#
+.\#*
+.*.swp
+.*.swo
+
+# MacOS specific
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# Operating System Files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Directories
+/quicklisp/
+/tmp/
