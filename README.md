@@ -21,25 +21,22 @@ vorm/
 │   │   ├── core.md        # Core API documentation
 │   │   └── utils.md       # Utils API documentation
 │   └── guides/            # User and developer guides
-│       └── developer-guide.md
+│       ├── developer-guide.md
+│       └── shape-grammar-concepts.md # Shape grammar concepts
 ├── scripts/               # Utility scripts
 │   ├── build-binary.lisp  # Script for building executable
 │   ├── run-repl.lisp      # Script for starting REPL
 │   └── run-tests.lisp     # Script for running tests
 ├── src/                   # Source code
-│   ├── core/              # Core functionality
-│   │   └── arithmetic.lisp # Arithmetic operations
+│   ├── arithmetic.lisp    # Arithmetic operations
 │   ├── main.lisp          # Application entry point
-│   ├── package.lisp       # Package definitions
-│   └── utils/             # Utility functions
-│       └── math.lisp      # Math utilities
+│   ├── math.lisp          # Math utilities
+│   └── package.lisp       # Package definitions
 └── tests/                 # Test files
-    ├── core/              # Tests for core functionality
-    │   └── arithmetic-test.lisp
+    ├── arithmetic-test.lisp # Tests for arithmetic operations
     ├── main.lisp          # Test orchestration
-    ├── package.lisp       # Test package definitions
-    └── utils/             # Tests for utilities
-        └── math-test.lisp
+    ├── math-test.lisp     # Tests for math utilities
+    └── package.lisp       # Test package definitions
 ```
 
 ## Installation
@@ -116,6 +113,7 @@ make test
 Comprehensive documentation is available in the `docs/` directory:
 
 - [Developer Guide](docs/guides/developer-guide.md): Information for developers working with the codebase
+- [Shape Grammar Concepts](docs/guides/shape-grammar-concepts.md): Overview of shape grammar concepts in VORM
 - [Core API](docs/api/core.md): Documentation for the core functionality
 - [Utils API](docs/api/utils.md): Documentation for utility functions
 

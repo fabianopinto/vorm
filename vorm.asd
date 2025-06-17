@@ -12,15 +12,12 @@
   :source-control (:git "https://github.com/fabianopinto/vorm.git")
   :depends-on ()
   :components ((:file "src/package")
-               (:module "src/utils"
-                :depends-on ("src/package")
-                :components
-                ((:file "math")))
-               (:module "src/core"
-                :depends-on ("src/package" "src/utils")
-                :components
-                ((:file "arithmetic")))
-               (:file "src/main" :depends-on ("src/package" "src/core")))
+               (:file "src/math"
+                :depends-on ("src/package"))
+               (:file "src/arithmetic"
+                :depends-on ("src/package" "src/math"))
+               (:file "src/main" 
+                :depends-on ("src/package" "src/arithmetic")))
   :in-order-to ((asdf:test-op (asdf:test-op "vorm/test"))))
 
 (asdf:defsystem "vorm/test"
@@ -31,13 +28,7 @@
   :pathname "tests"
   :components ((:file "package")
                (:file "main" :depends-on ("package"))
-               (:module "core"
-                :depends-on ("package" "main")
-                :components
-                ((:file "arithmetic-test")))
-               (:module "utils"
-                :depends-on ("package" "main")
-                :components
-                ((:file "math-test"))))
+               (:file "arithmetic-test" :depends-on ("package" "main"))
+               (:file "math-test" :depends-on ("package" "main")))
   :description "Test system for vorm"
   :perform (asdf:test-op (op c) (uiop:symbol-call :vorm.tests :run-tests)))
