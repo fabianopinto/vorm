@@ -21,8 +21,12 @@
                 :depends-on ("package" "utils" "shapes"))
                (:file "grammar"
                 :depends-on ("package" "utils" "shapes" "transformations"))
+               (:file "parser"
+                :depends-on ("package" "utils" "shapes" "transformations" "grammar"))
+               (:file "interpreter"
+                :depends-on ("package" "utils" "shapes" "transformations" "grammar" "parser"))
                (:file "main" 
-                :depends-on ("package" "utils" "shapes" "transformations" "grammar")))
+                :depends-on ("package" "utils" "shapes" "transformations" "grammar" "parser" "interpreter")))
   :in-order-to ((asdf:test-op (asdf:test-op "vorm/test"))))
 
 (asdf:defsystem "vorm/test"
@@ -36,5 +40,7 @@
                (:file "main" :depends-on ("package"))
                (:file "shapes-tests" :depends-on ("package" "main"))
                (:file "transformations-tests" :depends-on ("package" "main"))
-               (:file "grammar-tests" :depends-on ("package" "main")))
+               (:file "grammar-tests" :depends-on ("package" "main"))
+               (:file "parser-tests" :depends-on ("package" "main"))
+               (:file "interpreter-tests" :depends-on ("package" "main")))
   :perform (asdf:test-op (op c) (uiop:symbol-call :vorm.tests :run-tests)))

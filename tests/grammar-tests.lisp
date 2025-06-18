@@ -65,18 +65,18 @@
 
 (test match-shape-variable
   "Test matching with variables"
-  (let* ((pattern 'vorm::?x)
+  (let* ((pattern '?x)
          (shape (make-point 10 20))
          (bindings (match-shape pattern shape)))
     (is (not (null bindings)))
-    (is (eq (cdr (assoc 'vorm::?x bindings)) shape))))
+    (is (eq (cdr (assoc '?x bindings)) shape))))
 
 (test match-shape-variable-consistency
   "Test variable consistency in matches"
   (let* ((p1 (make-point 10 20))
          (p2 (make-point 20 30))
-         (pattern1 'vorm::?x)
-         (pattern2 'vorm::?x)
+         (pattern1 '?x)
+         (pattern2 '?x)
          (bindings (match-shape pattern1 p1))
          (bindings2 (match-shape pattern2 p1 bindings))
          (bindings3 (match-shape pattern2 p2 bindings)))
@@ -119,8 +119,8 @@
 
 (test apply-rule-with-variables
   "Test rule application with variables"
-  (let* ((left 'vorm::?x)
-         (right 'vorm::?x)  ; identity rule
+  (let* ((left '?x)
+         (right '?x)  ; identity rule
          (rule (make-rule left right))
          (shape (make-point 10 20))
          (result (apply-rule rule shape)))

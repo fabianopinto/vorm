@@ -162,6 +162,58 @@
     ;; Fallback: no match found
     (t nil)))
 
+(defun process-vertex-coordinate (coord bindings)
+  "Process a vertex coordinate, which could be a number, variable, or expression."
+  (cond
+    ;; If it's a variable (symbol starting with ?), substitute its binding
+    ((and (symbolp coord) (char= (char (symbol-name coord) 0) #\?))
+     (let ((binding (assoc coord bindings)))
+       (if binding
+           (cdr binding)
+           coord)))
+    
+    ;; If it's an arithmetic expression, evaluate it recursively
+    ((and (listp coord) (member (first coord) '(+ - * / expt sqrt)))
+     (let ((op (first coord))
+           (args (mapcar (lambda (arg) (process-vertex-coordinate arg bindings)) (rest coord))))
+       (cond
+         ((eq op '+) (apply #'+ args))
+         ((eq op '-) (apply #'- args))
+         ((eq op '*) (apply #'* args))
+         ((eq op '/) (apply #'/ args))
+         ((eq op 'expt) (apply #'expt args))
+         ((eq op 'sqrt) (apply #'sqrt args))
+         (t coord))))
+    
+    ;; Otherwise, return as is
+    (t coord)))
+
+(defun evaluate-expression (expr bindings)
+  "Evaluate an arithmetic expression with variables replaced by their bindings."
+  (cond
+    ;; Variable substitution
+    ((and (symbolp expr) (char= (char (symbol-name expr) 0) #\?))
+     (let ((binding (assoc expr bindings)))
+       (if binding
+           (cdr binding)
+           expr)))
+    
+    ;; Recursive evaluation of list expressions (arithmetic operations)
+    ((listp expr)
+     (let ((op (first expr))
+           (args (mapcar (lambda (arg) (evaluate-expression arg bindings)) (rest expr))))
+       (cond
+         ((eq op '+) (apply #'+ args))
+         ((eq op '-) (apply #'- args))
+         ((eq op '*) (apply #'* args))
+         ((eq op '/) (apply #'/ args))
+         ((eq op 'expt) (apply #'expt args))
+         ((eq op 'sqrt) (apply #'sqrt args))
+         (t expr))))
+    
+    ;; Return other values unchanged (numbers, etc.)
+    (t expr)))
+
 (defun substitute-bindings (shape bindings)
   "Replace variables in SHAPE with their bound values from BINDINGS."
   (when shape  ;; Guard against NIL inputs
@@ -173,6 +225,18 @@
              (cdr binding)
              shape)))
       
+      ;; Special handling for polygon vertex pairs in rule definitions
+      ((and (listp shape) (= (length shape) 2) 
+            (or (numberp (first shape)) (symbolp (first shape)) (listp (first shape)))
+            (or (numberp (second shape)) (symbolp (second shape)) (listp (second shape))))
+       (list (process-vertex-coordinate (first shape) bindings)
+             (process-vertex-coordinate (second shape) bindings)))
+      
+      ;; For arithmetic expressions in lists that aren't shape definitions
+      ((and (listp shape) (not (typep shape 'point)) 
+            (member (first shape) '(+ - * / expt sqrt)))
+       (evaluate-expression shape bindings))
+      
       ;; Recursively substitute bindings in composite shapes
       ((typep shape 'line)
        (make-instance 'line
@@ -183,7 +247,16 @@
       
       ((typep shape 'polygon)
        (make-instance 'polygon
-                      :vertices (mapcar (lambda (v) (substitute-bindings v bindings))
+                      :vertices (mapcar (lambda (v) 
+                                         (if (listp v)
+                                             ;; Handle vertex coordinate pairs
+                                             (if (= (length v) 2)
+                                                 (list (process-vertex-coordinate (first v) bindings)
+                                                       (process-vertex-coordinate (second v) bindings))
+                                                 ;; For other list structures
+                                                 (substitute-bindings v bindings))
+                                             ;; For point objects or other vertices
+                                             (substitute-bindings v bindings)))
                                         (polygon-vertices shape))
                       :id (shape-id shape)
                       :metadata (shape-metadata shape)))

@@ -99,4 +99,30 @@
            #:apply-rule
            #:apply-grammar-step
            #:apply-grammar
-           #:substitute-bindings))
+           #:substitute-bindings
+           
+           ;; Parser functions
+           #:parse-shape
+           #:parse-point
+           #:parse-line
+           #:parse-polygon
+           #:parse-circle
+           #:parse-rectangle
+           #:parse-transformation
+           #:parse-translation
+           #:parse-rotation
+           #:parse-scaling
+           #:parse-reflection
+           #:parse-rule
+           #:parse-grammar
+           
+           ;; Interpreter functions
+           #:interpret-grammar
+           #:generate-shapes
+           #:evaluate-condition
+           #:execute-grammar-script
+           #:trace-grammar-execution
+           #:start-interactive-grammar
+           #:step-interactive-grammar
+           #:get-interactive-grammar-state
+           #:reset-interactive-grammar))
