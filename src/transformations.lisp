@@ -31,7 +31,18 @@
   (:documentation "Translation transformation by (dx, dy)."))
 
 (defun make-translation (dx dy &key name)
-  "Create a translation transformation by DX along x-axis and DY along y-axis."
+  "Create a translation transformation by DX along x-axis and DY along y-axis.
+   
+   Parameters:
+     DX - Distance to translate along the x-axis
+     DY - Distance to translate along the y-axis
+     NAME - Optional name for the transformation
+   
+   Returns:
+     A new translation transformation instance
+   
+   Example:
+     (make-translation 10 20) ; Translate 10 units right and 20 units down"
   (make-instance 'translation :dx dx :dy dy :name name))
 
 (defmethod apply-transformation ((trans translation) (shape point))
@@ -78,7 +89,19 @@
   (:documentation "Rotation transformation around a center point by an angle."))
 
 (defun make-rotation (angle center-x center-y &key name)
-  "Create a rotation transformation of ANGLE degrees around center (CENTER-X, CENTER-Y)."
+  "Create a rotation transformation of ANGLE degrees around center (CENTER-X, CENTER-Y).
+   
+   Parameters:
+     ANGLE - Rotation angle in degrees (positive is counterclockwise)
+     CENTER-X - X coordinate of the rotation center point
+     CENTER-Y - Y coordinate of the rotation center point
+     NAME - Optional name for the transformation
+   
+   Returns:
+     A new rotation transformation instance
+   
+   Example:
+     (make-rotation 90 50 50) ; Rotate 90 degrees counterclockwise around (50, 50)"
   (make-instance 'rotation
                  :angle angle
                  :center (make-point center-x center-y)
@@ -194,8 +217,21 @@
   (:documentation "Reflection transformation across a line."))
 
 (defun make-reflection (line-start-x line-start-y line-end-x line-end-y &key name)
-  "Create a reflection transformation across the line from 
-   (LINE-START-X, LINE-START-Y) to (LINE-END-X, LINE-END-Y)."
+  "Create a reflection transformation across a line from 
+   (LINE-START-X, LINE-START-Y) to (LINE-END-X, LINE-END-Y).
+   
+   Parameters:
+     LINE-START-X - X coordinate of the reflection line's start point
+     LINE-START-Y - Y coordinate of the reflection line's start point
+     LINE-END-X - X coordinate of the reflection line's end point
+     LINE-END-Y - Y coordinate of the reflection line's end point
+     NAME - Optional name for the transformation
+   
+   Returns:
+     A new reflection transformation instance
+   
+   Example:
+     (make-reflection 0 0 100 0) ; Reflect across the horizontal axis"
   (make-instance 'reflection
                  :line (make-line line-start-x line-start-y line-end-x line-end-y)
                  :name name))
@@ -260,13 +296,34 @@
   (:documentation "A composition of multiple transformations applied in sequence."))
 
 (defun identity-transformation (&key name)
-  "Create an identity transformation that doesn't change shapes."
+  "Create an identity transformation that doesn't change shapes.
+   
+   Parameters:
+     NAME - Optional name for the transformation (default: "Identity")
+   
+   Returns:
+     A new identity transformation instance that leaves shapes unchanged
+   
+   Example:
+     (identity-transformation) ; Creates a transformation that keeps shapes as they are"
   (make-instance 'composed-transformation
                  :transformations nil
                  :name (or name "Identity")))
 
 (defmethod compose-transformations ((t1 transformation) (t2 transformation))
-  "Compose two transformations."
+  "Compose two transformations into a single transformation that applies both sequentially.
+   
+   Parameters:
+     T1 - The first transformation to apply
+     T2 - The second transformation to apply after T1
+   
+   Returns:
+     A new composed transformation that applies T1 followed by T2
+   
+   Example:
+     (compose-transformations 
+      (make-translation 10 0) 
+      (make-rotation 45 0 0)) ; First translate, then rotate"
   (make-instance 'composed-transformation
                  :transformations (list t1 t2)))
 

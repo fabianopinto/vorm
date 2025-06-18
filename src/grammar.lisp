@@ -31,8 +31,23 @@
 
 (defun make-rule (left-side right-side &key id label condition (probability 1.0))
   "Create a shape grammar rule with LEFT-SIDE (pattern) and RIGHT-SIDE (replacement).
-   CONDITION is an optional function that must return true for rule to be applied.
-   PROBABILITY is a value between 0.0 and 1.0 indicating the probability of applying the rule."
+   
+   Parameters:
+     LEFT-SIDE - The pattern to match against shapes
+     RIGHT-SIDE - The replacement shape or shapes
+     ID - Optional unique identifier for the rule
+     LABEL - Optional descriptive label for the rule
+     CONDITION - Optional function that must evaluate to true for rule to be applied
+     PROBABILITY - Value between 0.0 and 1.0 indicating application probability (default: 1.0)
+   
+   Returns:
+     A new rule instance
+   
+   Example:
+     (make-rule (make-circle 50 50 20) 
+                (make-polygon '((30 30) (70 30) (50 70)))
+                :label "circle-to-triangle"
+                :probability 0.8)"
   (make-instance 'rule
                  :id (or id (gensym "RULE-"))
                  :label label
@@ -63,7 +78,25 @@
 
 (defun make-grammar (name axiom &key rules metadata)
   "Create a shape grammar with NAME and AXIOM (initial shape).
-   RULES is an optional list of rules to add to the grammar."
+   
+   Parameters:
+     NAME - A string name for the grammar
+     AXIOM - The initial shape or list of shapes
+     RULES - Optional list of rules to add to the grammar
+     METADATA - Optional additional data associated with the grammar
+   
+   Returns:
+     A new grammar instance
+   
+   Example:
+     (make-grammar "simple-grammar"
+                  (make-circle 50 50 20)
+                  :rules (list (make-rule ...)))
+   
+   See also:
+     MAKE-RULE - Creates rules to add to the grammar
+     APPLY-GRAMMAR - Applies a grammar for multiple iterations
+     PARSE-GRAMMAR - Creates a grammar from an s-expression"
   (make-instance 'grammar
                  :name name
                  :axiom axiom
@@ -85,9 +118,18 @@
 ;;; Rule application
 (defun match-shape (pattern shape &optional bindings)
   "Match a pattern to a shape, returning bindings if successful or NIL if not.
-   PATTERN is the left-hand side of a rule.
-   SHAPE is the shape to match against.
-   BINDINGS is an optional alist of existing bindings."
+   
+   Parameters:
+     PATTERN - The left-hand side of a rule or pattern to match
+     SHAPE - The shape to match against the pattern
+     BINDINGS - Optional alist of existing variable bindings
+   
+   Returns:
+     An alist of variable bindings if match is successful, or NIL if no match
+     A value of '(t) indicates a successful match with no variable bindings
+   
+   Example:
+     (match-shape '?x (make-point 10 20)) ; Binds ?x to the point"
   (cond
     ;; If pattern is a variable (symbol starting with ?), bind it to the shape
     ((and (symbolp pattern) (char= (char (symbol-name pattern) 0) #\?))
@@ -215,7 +257,18 @@
     (t expr)))
 
 (defun substitute-bindings (shape bindings)
-  "Replace variables in SHAPE with their bound values from BINDINGS."
+  "Replace variables in SHAPE with their bound values from BINDINGS.
+   
+   Parameters:
+     SHAPE - A shape or pattern containing variables
+     BINDINGS - An alist mapping variable symbols to values
+   
+   Returns:
+     A new shape with all variables replaced by their bound values
+   
+   Example:
+     (substitute-bindings '(make-point ?x ?y) '((?x . 10) (?y . 20)))
+     ; Returns (make-point 10 20)"
   (when shape  ;; Guard against NIL inputs
     (cond
       ;; If shape is a variable, substitute its binding
@@ -273,7 +326,17 @@
 
 (defun apply-rule (rule shape &optional (transformation (identity-transformation)))
   "Apply RULE to SHAPE using TRANSFORMATION, returning a list of results.
-   Returns NIL if the rule cannot be applied to the shape."
+   
+   Parameters:
+     RULE - The shape grammar rule to apply
+     SHAPE - The shape to transform
+     TRANSFORMATION - Optional transformation to apply to the result (default: identity)
+   
+   Returns:
+     A list containing the transformed shape(s) if rule applies, or NIL if not
+   
+   Example:
+     (apply-rule my-rule (make-circle 50 50 20)) ; Applies rule to circle"
   (when (and rule shape)
     ;; Try to match the left side of the rule with the shape
     (let ((bindings (match-shape (rule-left-side rule) shape)))
@@ -295,7 +358,20 @@
 
 (defun apply-grammar-step (grammar shapes)
   "Apply one step of GRAMMAR to SHAPES, returning the new set of shapes.
-   Attempts to apply one rule from the grammar to one shape."
+   
+   Parameters:
+     GRAMMAR - The shape grammar to apply
+     SHAPES - List of shapes to transform
+   
+   Returns:
+     A new list of shapes after applying one rule transformation
+     Returns original shapes if no rule could be applied
+   
+   Example:
+     (apply-grammar-step my-grammar (list (make-circle 50 50 20)))
+   
+   This function attempts to apply one rule from the grammar to one shape.
+   It prioritizes rules in the order they appear in the grammar."
   (let ((result nil)  ;; Use a different variable name to avoid confusion
         (applied nil))
     ;; Try each rule on each shape
@@ -319,7 +395,19 @@
 
 (defun apply-grammar (grammar max-iterations &optional (shapes (ensure-list (grammar-axiom grammar))))
   "Apply GRAMMAR repeatedly for up to MAX-ITERATIONS steps, starting with SHAPES.
-   Returns the final set of shapes after all iterations."
+   
+   Parameters:
+     GRAMMAR - The shape grammar to apply
+     MAX-ITERATIONS - Maximum number of iterations to perform
+     SHAPES - Optional initial shapes (default: grammar's axiom)
+   
+   Returns:
+     The final set of shapes after all iterations
+   
+   Example:
+     (apply-grammar my-grammar 5) ; Apply grammar for 5 iterations
+   
+   This function stops early if no changes are made in an iteration."
   (let ((current-shapes shapes))
     (dotimes (i max-iterations current-shapes)
       (let ((new-shapes (apply-grammar-step grammar current-shapes)))

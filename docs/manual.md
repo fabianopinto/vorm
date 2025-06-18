@@ -2,52 +2,116 @@
 
 ## Introduction
 
-Vorm is a sample Common Lisp project that demonstrates proper project structure and organization. This manual provides detailed information on how to use the system.
+Vorm is a framework for creating and manipulating geometric shapes through rule-based transformations. This manual provides detailed information on how to use the system.
 
-## Core Functions
+## Basic Shape Functions
 
-### add
+### make-point
 
 ```lisp
-(add a b)
+(make-point x y &key id metadata)
 ```
 
-Adds two numbers together and returns the result.
+Creates a point at the specified coordinates.
 
 **Parameters:**
-- `a`: First number
-- `b`: Second number
+- `x`: X coordinate (horizontal position)
+- `y`: Y coordinate (vertical position)
+- `id`: Optional unique identifier
+- `metadata`: Optional additional data
 
 **Returns:**
-- The sum of `a` and `b`
+- A new point instance
 
 **Examples:**
 ```lisp
-(add 2 3)  ; => 5
-(add -1 5) ; => 4
+(make-point 10 20) ; Creates a point at (10, 20)
 ```
 
-### subtract
+### make-circle
 
 ```lisp
-(subtract a b)
+(make-circle center-x center-y radius &key id metadata)
 ```
 
-Subtracts the second number from the first and returns the result.
+Creates a circle with the specified center and radius.
 
 **Parameters:**
-- `a`: Number to subtract from
-- `b`: Number to subtract
+- `center-x`: X coordinate of the circle's center
+- `center-y`: Y coordinate of the circle's center
+- `radius`: Radius of the circle
+- `id`: Optional unique identifier
+- `metadata`: Optional additional data
 
 **Returns:**
-- The result of `a - b`
+- A new circle instance
 
 **Examples:**
 ```lisp
-(subtract 10 4) ; => 6
-(subtract 5 8)  ; => -3
+(make-circle 50 50 20) ; Creates a circle at (50, 50) with radius 20
 ```
 
-## Advanced Usage
+## Grammar Functions
 
-This section will be expanded in future versions as more functionality is added to the project.
+### make-grammar
+
+```lisp
+(make-grammar name axiom &key rules metadata)
+```
+
+Creates a shape grammar with the specified name and initial shape.
+
+**Parameters:**
+- `name`: A string name for the grammar
+- `axiom`: The initial shape or list of shapes
+- `rules`: Optional list of rules to add to the grammar
+- `metadata`: Optional additional data
+
+**Returns:**
+- A new grammar instance
+
+**Examples:**
+```lisp
+(make-grammar "simple-grammar" 
+             (make-circle 50 50 20)
+             :rules (list (make-rule ...)))
+```
+
+### generate-shapes
+
+```lisp
+(generate-shapes grammar max-iterations &key include-intermediates)
+```
+
+Generates shapes by applying a grammar for a specified number of iterations.
+
+**Parameters:**
+- `grammar`: A grammar object to apply
+- `max-iterations`: Maximum number of iterations to perform
+- `include-intermediates`: When true, returns all intermediate steps
+
+**Returns:**
+- A list of shapes after applying the grammar
+
+**Examples:**
+```lisp
+(generate-shapes my-grammar 5) ; Apply grammar for 5 iterations
+```
+
+## Interactive Usage
+
+VORM provides functions for step-by-step interactive grammar execution:
+
+```lisp
+;; Start interactive execution
+(start-interactive-grammar grammar)
+
+;; Execute one step
+(step-interactive-grammar)
+
+;; Get current state
+(get-interactive-grammar-state)
+
+;; Reset to initial state
+(reset-interactive-grammar)
+```

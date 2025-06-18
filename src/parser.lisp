@@ -78,7 +78,20 @@
       (t (error "Unknown transformation type: ~S" type-sym)))))
 
 (defun parse-shape (expr)
-  "Parse a shape expression."
+  "Parse a shape expression into a shape object.
+   
+   Parameters:
+     EXPR - A shape expression, which can be one of:
+            - A symbol (variable or reference)
+            - A shape expression like (point x y), (line (x1 y1) (x2 y2)), etc.
+   
+   Returns:
+     A shape object representing the parsed expression, or the symbol if a variable
+   
+   Example:
+     (parse-shape '(circle (50 50) 20)) ; Creates a circle at (50,50) with radius 20
+     (parse-shape '(polygon (10 10) (30 10) (20 30))) ; Creates a triangle
+     (parse-shape '?x) ; Returns the symbol ?x (represents a variable)"
   (cond
     ((symbolp expr)
      ;; Handle variable or reference
@@ -96,7 +109,27 @@
          (t (error "Unknown shape type: ~S" type-sym)))))))
 
 (defun parse-rule (expr)
-  "Parse a rule expression: (rule left-side right-side &key label probability condition)"
+  "Parse a rule expression into a rule object.
+   
+   Parameters:
+     EXPR - A rule expression of the form:
+            (rule left-side right-side &key label probability condition)
+   
+   Returns:
+     A rule object representing the parsed expression
+   
+   Example:
+     (parse-rule '(rule (circle (50 50) 20)
+                       (polygon (30 30) (70 30) (50 70))
+                       :label "circle-to-triangle"
+                       :probability 0.8
+                       :condition (> ?r 10)))
+   
+   The left-side and right-side are parsed with parse-shape.
+   Options include:
+   - :label - A descriptive label for the rule
+   - :probability - Value between 0.0 and 1.0 (default: 1.0)
+   - :condition - An expression that must evaluate to true for rule to apply"
   (unless (and (listp expr) (>= (length expr) 3))
     (error "Invalid rule expression: ~S" expr))
   
@@ -121,9 +154,30 @@
                :condition condition)))
 
 (defun parse-grammar (expr)
-  "Parse a grammar expression:
-   (grammar name axiom &key rules)
-   Where rules is a list of rule expressions."
+  "Parse a grammar expression into a grammar object.
+   
+   Parameters:
+     EXPR - A grammar expression of the form:
+            (grammar name axiom &key rules metadata)
+   
+   Returns:
+     A grammar object representing the parsed expression
+   
+   Example:
+     (parse-grammar 
+      '(grammar "my-grammar"
+                (circle (50 50) 20)
+                :rules ((rule (circle (50 50) 20)
+                            (polygon (30 30) (70 30) (50 70))
+                            :label "circle-to-triangle"))))
+   
+   The rules key takes a list of rule expressions, each parsed with parse-rule.
+   The metadata key can store arbitrary data with the grammar.
+   
+   See also:
+     PARSE-RULE - Parses rule expressions within the grammar
+     INTERPRET-GRAMMAR - Directly applies a parsed grammar expression
+     GENERATE-SHAPES - Generates shapes from a grammar object"
   (unless (and (listp expr) (>= (length expr) 3))
     (error "Invalid grammar expression: ~S" expr))
   

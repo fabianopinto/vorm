@@ -1,8 +1,23 @@
 (in-package :vorm)
 
-;; Main entry function for the executable
+;;;; Main Entry Module
+;;;; 
+;;;; This file implements the command-line interface and executable entry point
+;;;; for the VORM system. It provides a simple CLI for interacting with the
+;;;; shape grammar functionality.
 (defun main ()
-  "Main entry point for the vorm executable."
+  "Main entry point for the vorm executable.
+   
+   Parameters:
+     None (command-line arguments are accessed via uiop:command-line-arguments)
+   
+   Returns:
+     Exit code (0 for success)
+   
+   This function processes command-line arguments and provides a simple
+   CLI interface to the vorm system. Available commands include:
+   - vorm shapes - Show available shape operations
+   - vorm help - Show help information"
   (let ((args (uiop:command-line-arguments)))
     (format t "~&Welcome to vorm binary!~%")
     (format t "~&Version: ~a~%" (asdf:component-version (asdf:find-system :vorm)))

@@ -16,19 +16,19 @@ vorm/
 │   ├── run-repl.lisp      # Script to start a REPL with vorm loaded
 │   └── run-tests.lisp     # Script to run tests
 ├── src/                   # Source code
-│   ├── core/              # Core functionality
-│   │   └── arithmetic.lisp # Arithmetic operations
-│   ├── main.lisp          # Application entry point
-│   ├── package.lisp       # Package definitions
-│   └── utils/             # Utility functions
-│       └── math.lisp      # Math utilities
+│   ├── shapes.lisp       # Basic geometric shapes
+│   ├── grammar.lisp      # Shape grammar rules system
+│   ├── transformations.lisp # Geometric transformations
+│   ├── parser.lisp       # Grammar expression parser
+│   ├── interpreter.lisp  # Grammar interpreter
+│   ├── utils.lisp        # Utility functions
+│   ├── main.lisp         # Application entry point
+│   └── package.lisp      # Package definitions
 ├── tests/                 # Test files
-│   ├── core/              # Tests for core functionality
-│   │   └── arithmetic-test.lisp
-│   ├── main.lisp          # Test orchestration
-│   ├── package.lisp       # Test package definition
-│   └── utils/             # Tests for utilities
-│       └── math-test.lisp
+│   ├── shapes-test.lisp  # Tests for shapes
+│   ├── grammar-test.lisp # Tests for grammar
+│   ├── main.lisp         # Test orchestration
+│   └── package.lisp      # Test package definitions
 ├── .gitignore             # Git ignore file
 ├── LICENSE                # Project license (MIT)
 ├── Makefile               # Build and test commands
@@ -80,8 +80,8 @@ Then you can use the provided functions:
 
 ### Directory Organization
 
-- **src/core/**: Contains core functionality of the system
-- **src/utils/**: Contains utility functions used throughout the system
+- **src/**: Contains all source code files organized by functionality (shapes, grammar, transformations, etc.)
+- **src/utils.lisp**: Contains utility functions used throughout the system
 - **tests/**: Organized to mirror the src/ directory with tests for each component
 - **scripts/**: Utility scripts for development and testing
 
@@ -89,7 +89,7 @@ Then you can use the provided functions:
 
 When adding new features:
 
-1. Determine whether it belongs in `core/` or `utils/`
+1. Determine the appropriate source file based on functionality
 2. Create a new file if needed, or add to an existing module
 3. Add corresponding tests in the matching directory under `tests/`
 4. Update the ASDF file if you've added new files

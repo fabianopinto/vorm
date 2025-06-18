@@ -1,6 +1,18 @@
 (defpackage :vorm
   (:use :cl)
-  (:documentation "Main package for the vorm system")
+  (:documentation "Main package for the vorm system, providing a shape grammar implementation.
+                   
+                   Vorm is a framework for creating and manipulating
+                   geometric shapes through rule-based transformations. The system allows for the
+                   definition of shape grammars that can generate complex patterns from simple starting
+                   shapes through repeated application of transformation rules.
+                   
+                   Key components:
+                   - Basic shape definitions (point, line, circle, polygon, rectangle)
+                   - Geometric transformations (translation, rotation, scaling, reflection)
+                   - Grammar system (rules, pattern matching, substitution)
+                   - Parser for grammar definitions
+                   - Interactive execution environment")
   (:export ;; Main functions
            #:main
            

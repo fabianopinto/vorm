@@ -45,7 +45,24 @@
   (:documentation "Represents a 2D point."))
 
 (defun make-point (x y &key id metadata)
-  "Create a point at coordinates (X, Y)."
+  "Create a point at coordinates (X, Y).
+   
+   Parameters:
+     X - The x-coordinate (horizontal position)
+     Y - The y-coordinate (vertical position)
+     ID - Optional unique identifier for the point
+     METADATA - Optional additional data associated with the point
+   
+   Returns:
+     A new point instance at the specified coordinates
+   
+   Example:
+     (make-point 10 20) ; Creates a point at (10, 20)
+   
+   See also:
+     POINT-X - Accessor for the x-coordinate
+     POINT-Y - Accessor for the y-coordinate
+     PARSE-POINT - Creates a point from an s-expression"
   (make-instance 'point :x x :y y :id id :metadata metadata))
 
 (defmethod shape-contains-p ((shape point) (pt point))
@@ -79,7 +96,21 @@
   (:documentation "Represents a line segment between two points."))
 
 (defun make-line (start-x start-y end-x end-y &key id metadata)
-  "Create a line from (START-X, START-Y) to (END-X, END-Y)."
+  "Create a line from (START-X, START-Y) to (END-X, END-Y).
+   
+   Parameters:
+     START-X - X coordinate of the line's start point
+     START-Y - Y coordinate of the line's start point
+     END-X - X coordinate of the line's end point
+     END-Y - Y coordinate of the line's end point
+     ID - Optional unique identifier for the line
+     METADATA - Optional additional data associated with the line
+   
+   Returns:
+     A new line instance between the specified points
+   
+   Example:
+     (make-line 10 20 30 40) ; Creates a line from (10, 20) to (30, 40)"
   (make-instance 'line
                  :start (make-point start-x start-y)
                  :end (make-point end-x end-y)
@@ -115,7 +146,18 @@
   (:documentation "Represents a polygon defined by a list of vertices."))
 
 (defun make-polygon (points &key id metadata)
-  "Create a polygon from a list of points. POINTS is a list of (X Y) pairs."
+  "Create a polygon from a list of points.
+   
+   Parameters:
+     POINTS - A list of (X Y) pairs or point objects defining the vertices
+     ID - Optional unique identifier for the polygon
+     METADATA - Optional additional data associated with the polygon
+   
+   Returns:
+     A new polygon instance with the specified vertices
+   
+   Example:
+     (make-polygon '((10 20) (30 40) (50 20))) ; Creates a triangle"
   (make-instance 'polygon
                  :vertices (mapcar (lambda (p) 
                                      (if (typep p 'point)
@@ -126,7 +168,27 @@
                  :metadata metadata))
 
 (defun make-rectangle (x y width height &key id metadata)
-  "Create a rectangle with top-left corner at (X, Y) and given WIDTH and HEIGHT."
+  "Create a rectangle with top-left corner at (X, Y) and given WIDTH and HEIGHT.
+   
+   Parameters:
+     X - X coordinate of the top-left corner
+     Y - Y coordinate of the top-left corner
+     WIDTH - Width of the rectangle (horizontal size)
+     HEIGHT - Height of the rectangle (vertical size)
+     ID - Optional unique identifier for the rectangle
+     METADATA - Optional additional data associated with the rectangle
+   
+   Returns:
+     A new polygon instance in a rectangular shape
+   
+   Example:
+     (make-rectangle 10 20 50 30) ; Creates a 50x30 rectangle at (10, 20)
+   
+   See also:
+     MAKE-POLYGON - For creating general polygons
+     PARSE-RECTANGLE - Creates a rectangle from an s-expression
+     POLYGON-VERTICES - Accessor for the rectangle's vertices
+     SHAPE-BOUNDS - Gets the bounding box of a shape"
   (make-polygon (list (list x y)
                       (list (+ x width) y)
                       (list (+ x width) (+ y height))
@@ -146,7 +208,26 @@
   (:documentation "Represents a circle with a center and radius."))
 
 (defun make-circle (center-x center-y radius &key id metadata)
-  "Create a circle with center at (CENTER-X, CENTER-Y) and given RADIUS."
+  "Create a circle with center at (CENTER-X, CENTER-Y) and given RADIUS.
+   
+   Parameters:
+     CENTER-X - X coordinate of the circle's center
+     CENTER-Y - Y coordinate of the circle's center
+     RADIUS - Radius of the circle
+     ID - Optional unique identifier for the circle
+     METADATA - Optional additional data associated with the circle
+   
+   Returns:
+     A new circle instance with the specified center and radius
+   
+   Example:
+     (make-circle 50 50 20) ; Creates a circle at (50, 50) with radius 20
+   
+   See also:
+     CIRCLE-CENTER - Accessor for the center point
+     CIRCLE-RADIUS - Accessor for the radius
+     PARSE-CIRCLE - Creates a circle from an s-expression
+     SHAPE-CONTAINS-P - Tests if a point is inside a shape"
   (make-instance 'circle
                  :center (make-point center-x center-y)
                  :radius radius

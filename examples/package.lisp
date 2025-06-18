@@ -1,6 +1,14 @@
 (defpackage :vorm.examples
   (:use :cl :vorm)
-  (:documentation "Examples of shape grammars for the VORM system")
+  (:documentation "Examples of shape grammars for the VORM system.
+                   
+                   This package provides practical demonstrations of shape grammar concepts
+                   implemented in VORM, including fractal patterns (Koch curve, Sierpinski triangle),
+                   subdivision techniques (Mondrian-style, architectural patterns), and L-system
+                   based structures (plants, ferns, trees).
+                   
+                   Each example includes functions to create the grammar and to load/generate
+                   the pattern with a specified number of iterations.")
   (:export :load-koch-curve
            :load-koch-snowflake
            :create-koch-curve-grammar

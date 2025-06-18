@@ -32,7 +32,12 @@
      MAX-ITERATIONS - Maximum number of iteration steps to perform
    
    Returns:
-     The final list of shapes after applying the grammar rules"
+     The final list of shapes after applying the grammar rules
+   
+   See also:
+     PARSE-GRAMMAR - Parses the grammar expression without applying it
+     GENERATE-SHAPES - Lower-level function to generate shapes from a grammar object
+     TRACE-GRAMMAR-EXECUTION - Executes the grammar with detailed tracing information"
   (let ((grammar (parse-grammar grammar-expr)))
     (apply-grammar grammar max-iterations)))
 
@@ -47,7 +52,13 @@
    Returns:
      If INCLUDE-INTERMEDIATES is true, returns a list of shape lists,
      with each element representing the shapes after each iteration.
-     Otherwise, returns only the final list of shapes."
+     Otherwise, returns only the final list of shapes.
+   
+   See also:
+     APPLY-GRAMMAR - Lower-level function that applies a grammar for MAX-ITERATIONS steps
+     INTERPRET-GRAMMAR - Parses and applies a grammar expression
+     TRACE-GRAMMAR-EXECUTION - Similar functionality but with detailed execution trace
+     START-INTERACTIVE-GRAMMAR - For step-by-step interactive grammar application"
   (let* ((initial-shapes (ensure-list (grammar-axiom grammar)))
          (shape-list initial-shapes)
          (results (when include-intermediates
@@ -187,7 +198,13 @@
      The new set of shapes after applying a rule, or NIL if no rules applied
    
    Raises an error if no grammar has been started with START-INTERACTIVE-GRAMMAR.
-   Updates the global *grammar-state* with the new shapes and step information."
+   Updates the global *grammar-state* with the new shapes and step information.
+   
+   Example:
+     ;; Start interactive grammar execution
+     (start-interactive-grammar my-grammar)
+     ;; Execute one step and get the updated shapes
+     (step-interactive-grammar) ; => list of shapes after one rule application"
   (unless *grammar-state*
     (error "No active grammar. Call START-INTERACTIVE-GRAMMAR first."))
   

@@ -1,4 +1,9 @@
-;; Script to start a REPL with the vorm system loaded
+;;;; VORM REPL Initialization Script
+;;;;
+;;;; This script initializes a Common Lisp REPL with the VORM system loaded
+;;;; and provides helpful usage examples for the user. It handles loading both
+;;;; the main system and example packages, displaying informative messages
+;;;; throughout the process.
 ;; Get the directory of this script and the project root
 (defparameter *this-file* *load-pathname*)
 (defparameter *this-directory* (directory-namestring *this-file*))
