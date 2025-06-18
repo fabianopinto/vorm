@@ -40,8 +40,11 @@
 (format t "~&  (in-package :vorm)~%")
 (format t "~&~%")
 (format t "~&Then you can use functions like:~%")
-(format t "~&  (add 10 20)~%")
-(format t "~&  (subtract 50 30)~%")
+(format t "~&  (make-point 10 20)~%")
+(format t "~&  (make-line 10 20 30 40)~%")
+(format t "~&  (make-circle 10 20 5)~%")
+(format t "~&  (make-polygon (list (make-point 10 20) (make-point 30 40) (make-point 50 60)))~%")
+(format t "~&  (make-rectangle 10 20 5 10)~%")
 (format t "~&=================================~%~%")
 
 ;; This will be evaluated when the REPL starts, putting the user in the vorm package

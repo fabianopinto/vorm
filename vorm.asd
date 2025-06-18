@@ -11,24 +11,30 @@
   :bug-tracker "https://github.com/fabianopinto/vorm/issues"
   :source-control (:git "https://github.com/fabianopinto/vorm.git")
   :depends-on ()
-  :components ((:file "src/package")
-               (:file "src/math"
-                :depends-on ("src/package"))
-               (:file "src/arithmetic"
-                :depends-on ("src/package" "src/math"))
-               (:file "src/main" 
-                :depends-on ("src/package" "src/arithmetic")))
+  :pathname "src"
+  :components ((:file "package")
+               (:file "utils"
+                :depends-on ("package"))
+               (:file "shapes"
+                :depends-on ("package" "utils"))
+               (:file "transformations"
+                :depends-on ("package" "utils" "shapes"))
+               (:file "grammar"
+                :depends-on ("package" "utils" "shapes" "transformations"))
+               (:file "main" 
+                :depends-on ("package" "utils" "shapes" "transformations" "grammar")))
   :in-order-to ((asdf:test-op (asdf:test-op "vorm/test"))))
 
 (asdf:defsystem "vorm/test"
   :author "Fabiano Pinto"
   :license "MIT"
+  :description "Test system for vorm"
   :depends-on ("vorm"
                "fiveam")
   :pathname "tests"
   :components ((:file "package")
                (:file "main" :depends-on ("package"))
-               (:file "arithmetic-test" :depends-on ("package" "main"))
-               (:file "math-test" :depends-on ("package" "main")))
-  :description "Test system for vorm"
+               (:file "shapes-tests" :depends-on ("package" "main"))
+               (:file "transformations-tests" :depends-on ("package" "main"))
+               (:file "grammar-tests" :depends-on ("package" "main")))
   :perform (asdf:test-op (op c) (uiop:symbol-call :vorm.tests :run-tests)))

@@ -7,8 +7,7 @@
   :description "Tests for the vorm system")
 
 ;; Helper function for comparing floating point values with a tolerance
-;; This is duplicated from src/utils/math.lisp to avoid circular dependencies in testing
-(defun approx= (a b &optional (epsilon 0.00001))
+(defun approximately-equal (a b &optional (epsilon 1.0e-6))
   "Compare two floating point numbers for approximate equality."
   (<= (abs (- a b)) epsilon))
 
