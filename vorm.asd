@@ -8,8 +8,8 @@
 
 (defsystem :vorm
   :name "vorm"
-  :version "0.2.0"
-  :description "Common Lisp library for shape structures optimized for pattern recognition."
+  :version "0.3.0"
+  :description "Common Lisp library for shape structures optimized for pattern recognition, featuring precise mathematical tolerances and 1D geometry primitives."
   :author "Fabiano Pinto <fabiano.pinto@gmail.com>"
   :license "MIT"
   :depends-on (:alexandria)  ;; Using Alexandria for common utilities
@@ -18,7 +18,8 @@
                 :serial nil
                 :components ((:file "package")
                              (:file "math-tolerances" :depends-on ("package"))
-                             (:file "main" :depends-on ("package" "math-tolerances")))))
+                             (:file "geometry-1d" :depends-on ("package" "math-tolerances"))
+                             (:file "main" :depends-on ("package" "math-tolerances" "geometry-1d")))))
   :in-order-to ((test-op (test-op :vorm/tests)))
   :perform (load-op :after (op c)
                     (pushnew :vorm *features*)))
@@ -31,5 +32,6 @@
                 :serial nil
                 :components ((:file "package")
                              (:file "main" :depends-on ("package"))
-                             (:file "math-tolerances-tests" :depends-on ("package" "main")))))
+                             (:file "math-tolerances-tests" :depends-on ("package" "main"))
+                             (:file "geometry-1d-tests" :depends-on ("package" "main")))))
   :perform (test-op (o c) (funcall (intern "RUN!" :fiveam) :vorm-tests)))

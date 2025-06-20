@@ -13,4 +13,22 @@
    #:linear-equal
    #:normalize-angle
    #:angular-equal
-   #:with-custom-tolerance))
+   #:with-custom-tolerance
+   
+   ;; Segment structure and accessors
+   #:segment
+   #:segment-lower
+   #:segment-upper
+   #:make-segment
+   
+   ;; Segment operations
+   #:segments-overlap-p
+   #:segments-merge
+   
+   ;; Line structure and accessors
+   #:line
+   #:line-segments
+   #:make-line
+   
+   ;; Line operations
+   #:line-add-segments))

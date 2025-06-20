@@ -8,9 +8,15 @@ VORM is designed as a lightweight library for working with geometric lines and p
 
 ### Key Features
 
+#### Mathematical Foundation
 - **Mathematical Tolerance Functions**: Precise comparison of floating-point values for both linear and angular measurements
 - **Angle Normalization**: Utilities for working with angles and ensuring consistent representation
 - **Custom Tolerance Settings**: Macro support for temporarily adjusting tolerance thresholds
+
+#### 1D Geometry
+- **Segment Operations**: Create, compare and merge line segments with proper floating-point tolerance
+- **Line Management**: Represent collections of non-overlapping segments as unified lines
+- **Automatic Optimization**: Overlapping segments are automatically merged during operations
 
 ## Requirements
 
@@ -24,10 +30,12 @@ vorm/
 ├── src/                        # Source code
 │   ├── package.lisp            # Package definitions for VORM
 │   ├── math-tolerances.lisp    # Mathematical tolerance functions
+│   ├── geometry-1d.lisp        # 1D geometric primitives (segments & lines)
 │   └── main.lisp               # Main code (line geometry)
 ├── tests/                      # Tests
 │   ├── package.lisp            # Test package definitions
 │   ├── math-tolerances-tests.lisp  # Tests for math tolerance functions
+│   ├── geometry-1d-tests.lisp    # Tests for 1D geometry functionality
 │   └── main.lisp               # Main test code
 ├── build/                      # Build scripts
 │   ├── load-system.lisp        # Script to load the VORM system
@@ -87,6 +95,30 @@ This will load the system, run the tests, and report the results.
 ;; Using custom tolerance settings
 (vorm:with-custom-tolerance (1.0e-8 1.0e-8)
   (vorm:linear-equal 1.0 1.000001)) ; => NIL (outside strict tolerance)
+
+;; Creating segments (1D intervals)
+(defvar s1 (vorm:make-segment 1.0 5.0))
+(defvar s2 (vorm:make-segment 3.0 7.0))
+
+;; Checking for segment overlap
+(vorm:segments-overlap-p s1 s2)  ; => T
+
+;; Merging segments
+(defvar merged (vorm:segment-merge s1 s2))
+;; merged is now a segment from 1.0 to 7.0
+
+;; Creating lines (collections of non-overlapping segments)
+(defvar line (vorm:make-line s1 s2))
+;; line will contain one segment from 1.0 to 7.0 since s1 and s2 overlap
+
+;; Adding segments to a line (automatically merges overlapping segments)
+;; Note: line-add-segments takes a list of segments
+(vorm:line-add-segments line (list (vorm:make-segment 10.0 15.0)))
+;; line now contains two segments: [1.0,7.0] and [10.0,15.0]
+
+;; Adding multiple segments at once
+(vorm:line-add-segments line (list segment1 segment2 segment3))
+;; Overlapping segments are automatically merged
 ```
 
 ## Development
