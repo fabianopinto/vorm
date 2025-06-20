@@ -170,37 +170,6 @@
          ;; Invalid line objects
          nil))
     
-    ;; Circle matching
-    ((and (typep pattern 'circle) (typep shape 'circle))
-     (if (almost-equal (circle-radius pattern) (circle-radius shape))
-         (let ((center-match (match-shape (circle-center pattern) (circle-center shape) bindings)))
-           (or center-match '(t)))
-         nil))
-    
-    ;; Polygon matching
-    ((and (typep pattern 'polygon) (typep shape 'polygon))
-     (let ((pattern-vertices (polygon-vertices pattern))
-           (shape-vertices (polygon-vertices shape)))
-       (when (= (length pattern-vertices) (length shape-vertices))
-         ;; Try to match vertices in sequence, allowing for rotational variants
-         (or (some (lambda (i)
-                     (let ((rotated-vertices (rotate-list shape-vertices i))
-                           (result bindings))
-                       (loop for pv in pattern-vertices
-                             for sv in rotated-vertices
-                             while result
-                             do (setf result (match-shape pv sv result)))
-                       result))
-                   ;; Generate list from 0 to (length shape-vertices - 1)
-                   (loop for i from 0 below (length shape-vertices) collect i))
-             ;; Try with reversed vertices (reflection)
-             (let ((result bindings))
-               (loop for pv in pattern-vertices
-                     for sv in (reverse shape-vertices)
-                     while result
-                     do (setf result (match-shape pv sv result)))
-               result)))))
-    
     ;; Fallback: no match found
     (t nil)))
 
@@ -298,26 +267,10 @@
                       :id (shape-id shape)
                       :metadata (shape-metadata shape)))
       
-      ((typep shape 'polygon)
-       (make-instance 'polygon
-                      :vertices (mapcar (lambda (v) 
-                                         (if (listp v)
-                                             ;; Handle vertex coordinate pairs
-                                             (if (= (length v) 2)
-                                                 (list (process-vertex-coordinate (first v) bindings)
-                                                       (process-vertex-coordinate (second v) bindings))
-                                                 ;; For other list structures
-                                                 (substitute-bindings v bindings))
-                                             ;; For point objects or other vertices
-                                             (substitute-bindings v bindings)))
-                                        (polygon-vertices shape))
-                      :id (shape-id shape)
-                      :metadata (shape-metadata shape)))
-      
-      ((typep shape 'circle)
-       (make-instance 'circle
-                      :center (substitute-bindings (circle-center shape) bindings)
-                      :radius (circle-radius shape)
+      ((typep shape 'point)
+       (make-instance 'point
+                      :x (process-vertex-coordinate (point-x shape) bindings)
+                      :y (process-vertex-coordinate (point-y shape) bindings)
                       :id (shape-id shape)
                       :metadata (shape-metadata shape)))
       

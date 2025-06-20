@@ -22,43 +22,11 @@
     (is (= (point-x (line-end line)) 10))
     (is (= (point-y (line-end line)) 10))))
 
-(test parse-polygon
-  "Test parsing a polygon expression"
-  (let ((polygon (parse-shape '(polygon (0 0) (10 0) (10 10) (0 10)))))
-    (is (typep polygon 'polygon))
-    (is (= (length (polygon-vertices polygon)) 4))
-    (let ((vertices (polygon-vertices polygon)))
-      (is (= (point-x (first vertices)) 0))
-      (is (= (point-y (first vertices)) 0))
-      (is (= (point-x (second vertices)) 10))
-      (is (= (point-y (second vertices)) 0))
-      (is (= (point-x (third vertices)) 10))
-      (is (= (point-y (third vertices)) 10))
-      (is (= (point-x (fourth vertices)) 0))
-      (is (= (point-y (fourth vertices)) 10)))))
+;; Polygon parsing test removed in minimal geometry branch
 
-(test parse-rectangle
-  "Test parsing a rectangle expression"
-  (let ((rect (parse-shape '(rectangle 0 0 10 20))))
-    (is (typep rect 'polygon))
-    (is (= (length (polygon-vertices rect)) 4))
-    (let ((vertices (polygon-vertices rect)))
-      (is (= (point-x (first vertices)) 0))
-      (is (= (point-y (first vertices)) 0))
-      (is (= (point-x (second vertices)) 10))
-      (is (= (point-y (second vertices)) 0))
-      (is (= (point-x (third vertices)) 10))
-      (is (= (point-y (third vertices)) 20))
-      (is (= (point-x (fourth vertices)) 0))
-      (is (= (point-y (fourth vertices)) 20)))))
+;; Rectangle parsing test removed in minimal geometry branch
 
-(test parse-circle
-  "Test parsing a circle expression"
-  (let ((circle (parse-shape '(circle (10 20) 5))))
-    (is (typep circle 'circle))
-    (is (= (point-x (circle-center circle)) 10))
-    (is (= (point-y (circle-center circle)) 20))
-    (is (= (circle-radius circle) 5))))
+;; Circle parsing test removed in minimal geometry branch
 
 (test parse-translation
   "Test parsing a translation transformation"
@@ -125,13 +93,13 @@
 
 (test parse-grammar
   "Test parsing a complete grammar"
-  (let ((grammar (parse-grammar '(grammar "square-to-triangle"
-                                               (rectangle 0 0 10 10)
-                                               :rules ((rule (rectangle 0 0 10 10)
-                                                             (polygon (0 0) (10 0) (5 10))
-                                                             :label "square-to-triangle"))))))
+  (let ((grammar (parse-grammar '(grammar "horizontal-to-vertical"
+                                               (line (0 0) (10 0))
+                                               :rules ((rule (line (0 0) (10 0))
+                                                             (line (0 0) (0 10))
+                                                             :label "horizontal-to-vertical"))))))
     (is (typep grammar 'grammar))
-    (is (string= (grammar-name grammar) "square-to-triangle"))
-    (is (typep (grammar-axiom grammar) 'polygon))
+    (is (string= (grammar-name grammar) "horizontal-to-vertical"))
+    (is (typep (grammar-axiom grammar) 'line))
     (is (= (length (grammar-rules grammar)) 1))
-    (is (string= (rule-label (first (grammar-rules grammar))) "square-to-triangle"))))
+    (is (string= (rule-label (first (grammar-rules grammar))) "horizontal-to-vertical"))))

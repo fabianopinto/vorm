@@ -17,25 +17,7 @@
         (end (third expr)))
     (make-line (first start) (second start) (first end) (second end))))
 
-(defun parse-polygon (expr)
-  "Parse a polygon expression: (polygon (x1 y1) (x2 y2) ...)"
-  (unless (and (listp expr) (>= (length expr) 2))
-    (error "Invalid polygon expression: ~S" expr))
-  (make-polygon (cdr expr)))
-
-(defun parse-circle (expr)
-  "Parse a circle expression: (circle (center-x center-y) radius)"
-  (unless (and (listp expr) (>= (length expr) 3))
-    (error "Invalid circle expression: ~S" expr))
-  (let ((center (second expr))
-        (radius (third expr)))
-    (make-circle (first center) (second center) radius)))
-
-(defun parse-rectangle (expr)
-  "Parse a rectangle expression: (rectangle x y width height)"
-  (unless (and (listp expr) (>= (length expr) 5))
-    (error "Invalid rectangle expression: ~S" expr))
-  (make-rectangle (second expr) (third expr) (fourth expr) (fifth expr)))
+;; Polygon, circle, and rectangle parsing functions removed in minimal geometry branch
 
 (defun parse-translation (expr)
   "Parse a translation expression: (translate dx dy)"
@@ -103,9 +85,7 @@
        (cond
          ((string-equal type-sym "point") (parse-point expr))
          ((string-equal type-sym "line") (parse-line expr))
-         ((string-equal type-sym "polygon") (parse-polygon expr))
-         ((string-equal type-sym "circle") (parse-circle expr))
-         ((string-equal type-sym "rectangle") (parse-rectangle expr))
+         ;; Polygon, circle, and rectangle shape types removed in minimal geometry branch
          (t (error "Unknown shape type: ~S" type-sym)))))))
 
 (defun parse-rule (expr)
@@ -119,11 +99,11 @@
      A rule object representing the parsed expression
    
    Example:
-     (parse-rule '(rule (circle (50 50) 20)
-                       (polygon (30 30) (70 30) (50 70))
-                       :label "circle-to-triangle"
+     (parse-rule '(rule (line (0 0) (10 0))
+                       (line (0 0) (0 10))
+                       :label "horizontal-to-vertical"
                        :probability 0.8
-                       :condition (> ?r 10)))
+                       :condition (> ?length 5)))
    
    The left-side and right-side are parsed with parse-shape.
    Options include:
@@ -166,10 +146,10 @@
    Example:
      (parse-grammar 
       '(grammar "my-grammar"
-                (circle (50 50) 20)
-                :rules ((rule (circle (50 50) 20)
-                            (polygon (30 30) (70 30) (50 70))
-                            :label "circle-to-triangle"))))
+                (line (0 0) (10 0))
+                :rules ((rule (line (0 0) (10 0))
+                            (line (0 0) (0 10))
+                            :label "horizontal-to-vertical"))))
    
    The rules key takes a list of rule expressions, each parsed with parse-rule.
    The metadata key can store arbitrary data with the grammar.

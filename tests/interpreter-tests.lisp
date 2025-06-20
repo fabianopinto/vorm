@@ -26,27 +26,33 @@
 (test generate-shapes
   "Test generating shapes through grammar application"
   (let* ((grammar (parse-grammar 
-                   '(grammar "circle-to-triangle"
-                            (circle (50 50) 20)
-                            :rules ((rule (circle (50 50) 20)
-                                          (polygon (30 30) (70 30) (50 70))
-                                          :label "circle-to-triangle")))))
+                   '(grammar "horizontal-to-vertical"
+                            (line (0 0) (10 0))
+                            :rules ((rule (line (0 0) (10 0))
+                                          (line (0 0) (0 10))
+                                          :label "horizontal-to-vertical")))))
          (result (generate-shapes grammar 1))
          (intermediate-results (generate-shapes grammar 1 :include-intermediates t)))
     ;; Check final result
     (is (= (length result) 1))
-    (is (typep (first result) 'polygon))
-    (is (= (length (polygon-vertices (first result))) 3)) ; Triangle
+    (is (typep (first result) 'line))
+    (is (= (point-x (line-end (first result))) 0))
+    (is (= (point-y (line-end (first result))) 10))
     
     ;; Check intermediate results
     (is (= (length intermediate-results) 2)) ; Initial + 1 step
     (is (= (length (first intermediate-results)) 1)) ; Initial state has 1 shape
     (is (= (length (second intermediate-results)) 1)) ; Final state has 1 shape
     
-    ;; Check that the first state is a circle
-    (is (typep (first (first intermediate-results)) 'circle))
-    ;; Check that the last state is a triangle (3 vertices)
-    (is (= (length (polygon-vertices (first (second intermediate-results)))) 3))))
+    ;; Check that the first state is a horizontal line
+    (is (typep (first (first intermediate-results)) 'line))
+    (is (= (point-x (line-end (first (first intermediate-results)))) 10))
+    (is (= (point-y (line-end (first (first intermediate-results)))) 0))
+    
+    ;; Check that the last state is a vertical line
+    (is (typep (first (second intermediate-results)) 'line))
+    (is (= (point-x (line-end (first (second intermediate-results)))) 0))
+    (is (= (point-y (line-end (first (second intermediate-results)))) 10))))
 
 (test trace-grammar-execution
   "Test tracing grammar execution steps"

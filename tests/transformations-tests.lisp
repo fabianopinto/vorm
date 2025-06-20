@@ -24,30 +24,9 @@
     (is (= (point-x (line-end result)) 15))
     (is (= (point-y (line-end result)) 15))))
 
-(test translation-polygon
-  "Test translation of a polygon"
-  (let* ((poly (make-polygon '((0 0) (10 0) (10 10) (0 10))))
-         (trans (make-translation 5 5))
-         (result (apply-transformation trans poly))
-         (vertices (polygon-vertices result)))
-    (is (= (length vertices) 4))
-    (is (= (point-x (first vertices)) 5))
-    (is (= (point-y (first vertices)) 5))
-    (is (= (point-x (second vertices)) 15))
-    (is (= (point-y (second vertices)) 5))
-    (is (= (point-x (third vertices)) 15))
-    (is (= (point-y (third vertices)) 15))
-    (is (= (point-x (fourth vertices)) 5))
-    (is (= (point-y (fourth vertices)) 15))))
+;; Translation-polygon test removed in minimal geometry branch
 
-(test translation-circle
-  "Test translation of a circle"
-  (let* ((c (make-circle 10 10 5))
-         (trans (make-translation 5 -5))
-         (result (apply-transformation trans c)))
-    (is (= (point-x (circle-center result)) 15))
-    (is (= (point-y (circle-center result)) 5))
-    (is (= (circle-radius result) 5))))
+;; Translation-circle test removed in minimal geometry branch
 
 (test rotation-point
   "Test rotation of a point"
@@ -71,19 +50,7 @@
     (is (approximately-equal (point-x (line-end result)) 0 epsilon))
     (is (approximately-equal (point-y (line-end result)) 10 epsilon))))
 
-(test rotation-polygon
-  "Test rotation of a polygon"
-  (let* ((rect (make-rectangle 0 0 10 0))  ; actually a flat rectangle along x-axis
-         (rot (make-rotation 90 0 0))       ; 90 degrees around origin
-         (result (apply-transformation rot rect))
-         (vertices (polygon-vertices result))
-         (epsilon 0.0001))
-    (is (= (length vertices) 4))
-    ;; Check rotated coordinates
-    (is (approximately-equal (point-x (first vertices)) 0 epsilon))
-    (is (approximately-equal (point-y (first vertices)) 0 epsilon))
-    (is (approximately-equal (point-x (second vertices)) 0 epsilon))
-    (is (approximately-equal (point-y (second vertices)) 10 epsilon))))
+;; Rotation-polygon test removed in minimal geometry branch
 
 (test scaling-point
   "Test scaling a point"
@@ -93,14 +60,7 @@
     (is (= (point-x result) 20))
     (is (= (point-y result) 10))))
 
-(test scaling-circle
-  "Test scaling a circle"
-  (let* ((c (make-circle 10 10 5))
-         (scl (make-scaling 2 2 0 0))  ; 2x from origin
-         (result (apply-transformation scl c)))
-    (is (= (point-x (circle-center result)) 20))
-    (is (= (point-y (circle-center result)) 20))
-    (is (= (circle-radius result) 10))))  ; radius also scales
+;; Scaling-circle test removed in minimal geometry branch
 
 (test reflection
   "Test reflection transformation"
