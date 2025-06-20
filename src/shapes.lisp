@@ -32,26 +32,7 @@
       :documentation "Y coordinate of the point"))
   (:documentation "Represents a 2D point."))
 
-(defun make-point (x y &key id metadata)
-  "Create a point at coordinates (X, Y).
-   
-   Parameters:
-     X - The x-coordinate (horizontal position)
-     Y - The y-coordinate (vertical position)
-     ID - Optional unique identifier for the point
-     METADATA - Optional additional data associated with the point
-   
-   Returns:
-     A new point instance at the specified coordinates
-   
-   Example:
-     (make-point 10 20) ; Creates a point at (10, 20)
-   
-   See also:
-     POINT-X - Accessor for the x-coordinate
-     POINT-Y - Accessor for the y-coordinate
-     PARSE-POINT - Creates a point from an s-expression"
-  (make-instance 'point :x x :y y :id id :metadata metadata))
+;; make-point function removed in minimal geometry branch
 
 (defmethod shape-equals-p ((shape1 point) (shape2 point))
   (and (almost-equal (point-x shape1) (point-x shape2))
@@ -91,12 +72,7 @@
                  :id id
                  :metadata metadata))
 
-(defun line-length (line)
-  "Calculate the length of LINE."
-  (point-distance (point-x (line-start line))
-                  (point-y (line-start line))
-                  (point-x (line-end line))
-                  (point-y (line-end line))))
+;; line-length function removed in minimal geometry branch
 
 (defmethod shape-equals-p ((shape1 line) (shape2 line))
   (or (and (shape-equals-p (line-start shape1) (line-start shape2))

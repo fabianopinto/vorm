@@ -3,11 +3,7 @@
 ;;;; Parser for the VORM shape grammar system
 ;;;; This module handles parsing grammar definitions from s-expressions
 
-(defun parse-point (expr)
-  "Parse a point expression: (point x y)"
-  (unless (and (listp expr) (>= (length expr) 3))
-    (error "Invalid point expression: ~S" expr))
-  (make-point (second expr) (third expr)))
+;; parse-point function removed in minimal geometry branch
 
 (defun parse-line (expr)
   "Parse a line expression: (line (x1 y1) (x2 y2))"
@@ -83,7 +79,7 @@
     (t
      (let ((type-sym (first expr)))
        (cond
-         ((string-equal type-sym "point") (parse-point expr))
+         ((string-equal type-sym "point") (error "point shape type removed in minimal geometry branch"))
          ((string-equal type-sym "line") (parse-line expr))
          ;; Polygon, circle, and rectangle shape types removed in minimal geometry branch
          (t (error "Unknown shape type: ~S" type-sym)))))))

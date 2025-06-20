@@ -19,9 +19,6 @@
            ;; Utility functions
            #:ensure-list
            #:with-gensyms
-           #:point-distance
-           #:degrees-to-radians
-           #:radians-to-degrees
            
            ;; Basic Shape classes and functions
            #:shape
@@ -30,34 +27,17 @@
            #:point
            #:point-x
            #:point-y
-           #:make-point
            
            ;; Shape generic functions
-           #:shape-contains-p
-           #:shape-intersects-p
            #:shape-equals-p
-           #:shape-area
-           #:shape-perimeter
-           #:shape-bounds
            
            ;; Line class and functions
            #:line
            #:line-start
            #:line-end
-           #:line-length
            #:make-line
            
-           ;; Polygon class and functions
-           #:polygon
-           #:polygon-vertices
-           #:make-polygon
-           #:make-rectangle
-           
-           ;; Circle class and functions
-           #:circle
-           #:circle-center
-           #:circle-radius
-           #:make-circle
+           ;; No polygon or circle classes in minimal geometry branch
            
            ;; Transformation classes and functions
            #:transformation
@@ -115,11 +95,7 @@
            
            ;; Parser functions
            #:parse-shape
-           #:parse-point
            #:parse-line
-           #:parse-polygon
-           #:parse-circle
-           #:parse-rectangle
            #:parse-transformation
            #:parse-translation
            #:parse-rotation
