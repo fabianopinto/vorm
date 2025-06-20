@@ -17,7 +17,8 @@
   :components ((:module "src"
                 :serial nil
                 :components ((:file "package")
-                             (:file "main" :depends-on ("package")))))
+                             (:file "math-tolerances" :depends-on ("package"))
+                             (:file "main" :depends-on ("package" "math-tolerances")))))
   :in-order-to ((test-op (test-op :vorm/tests)))
   :perform (load-op :after (op c)
                     (pushnew :vorm *features*)))
@@ -29,5 +30,6 @@
   :components ((:module "tests"
                 :serial nil
                 :components ((:file "package")
-                             (:file "main" :depends-on ("package")))))
+                             (:file "main" :depends-on ("package"))
+                             (:file "math-tolerances-tests" :depends-on ("package" "main")))))
   :perform (test-op (o c) (funcall (intern "RUN!" :fiveam) :vorm-tests)))

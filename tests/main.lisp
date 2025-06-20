@@ -9,9 +9,7 @@
 ;; Use the test suite for the tests in this file
 (in-suite :vorm-tests)
 
-(test dummy-test
-  "Test the dummy function"
-  (is-true (dummy)))
+;; Main test functions will be added here as the project evolves
 
 (defun run-tests ()
   "Run all the tests in the VORM test suite."

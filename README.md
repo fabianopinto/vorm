@@ -6,6 +6,12 @@ A minimal Common Lisp project focused on line-based geometry functionality. Buil
 
 VORM is designed as a lightweight library for working with geometric lines and points in a 2D space. The project is structured for clean organization with separate source files and comprehensive tests.
 
+### Key Features
+
+- **Mathematical Tolerance Functions**: Precise comparison of floating-point values for both linear and angular measurements
+- **Angle Normalization**: Utilities for working with angles and ensuring consistent representation
+- **Custom Tolerance Settings**: Macro support for temporarily adjusting tolerance thresholds
+
 ## Requirements
 
 - [SBCL (Steel Bank Common Lisp)](https://www.sbcl.org/)
@@ -15,16 +21,18 @@ VORM is designed as a lightweight library for working with geometric lines and p
 
 ```
 vorm/
-├── src/                # Source code
-│   ├── package.lisp    # Package definitions for VORM
-│   └── main.lisp       # Main code
-├── tests/              # Tests
-│   ├── package.lisp    # Test package definitions
-│   └── main.lisp       # Test code
-├── build/              # Build scripts
-│   ├── load-system.lisp    # Script to load the VORM system
-│   └── run-tests.lisp      # Script to run VORM tests
-└── vorm.asd      # ASDF system definition
+├── src/                        # Source code
+│   ├── package.lisp            # Package definitions for VORM
+│   ├── math-tolerances.lisp    # Mathematical tolerance functions
+│   └── main.lisp               # Main code (line geometry)
+├── tests/                      # Tests
+│   ├── package.lisp            # Test package definitions
+│   ├── math-tolerances-tests.lisp  # Tests for math tolerance functions
+│   └── main.lisp               # Main test code
+├── build/                      # Build scripts
+│   ├── load-system.lisp        # Script to load the VORM system
+│   └── run-tests.lisp          # Script to run VORM tests
+└── vorm.asd                    # ASDF system definition
 ```
 
 ## Installation
@@ -71,7 +79,14 @@ This will load the system, run the tests, and report the results.
 
 ```lisp
 (asdf:load-system :vorm)
-(vorm:dummy)
+
+;; Using mathematical tolerance functions
+(vorm:linear-equal 1.0 1.000001)  ; => T (within default tolerance)
+(vorm:angular-equal 0.0 (* 2 pi)) ; => T (angles are considered equivalent)
+
+;; Using custom tolerance settings
+(vorm:with-custom-tolerance (1.0e-8 1.0e-8)
+  (vorm:linear-equal 1.0 1.000001)) ; => NIL (outside strict tolerance)
 ```
 
 ## Development
