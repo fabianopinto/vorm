@@ -31,4 +31,23 @@
    #:make-line
    
    ;; Line operations
-   #:line-add-segments))
+   #:lines-merge
+   #:line-empty-p
+   
+   ;; Parallels structure and accessors
+   #:parallels
+   #:parallels-lines
+   #:make-parallels
+   
+   ;; Parallels operations
+   #:parallels-add-lines
+   #:parallels-positions
+   
+   ;; Shape structure and accessors
+   #:shape
+   #:shape-angle-parallels
+   #:make-shape
+   
+   ;; Shape operations
+   #:shape-angles
+   #:shape-add-parallels))

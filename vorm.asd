@@ -8,8 +8,8 @@
 
 (defsystem :vorm
   :name "vorm"
-  :version "0.3.0"
-  :description "Common Lisp library for shape structures optimized for pattern recognition, featuring precise mathematical tolerances and 1D geometry primitives."
+  :version "0.4.0"
+  :description "Common Lisp library for shape structures optimized for pattern recognition, featuring precise mathematical tolerances, 1D and 2D geometry primitives."
   :author "Fabiano Pinto <fabiano.pinto@gmail.com>"
   :license "MIT"
   :depends-on (:alexandria)  ;; Using Alexandria for common utilities
@@ -19,7 +19,8 @@
                 :components ((:file "package")
                              (:file "math-tolerances" :depends-on ("package"))
                              (:file "geometry-1d" :depends-on ("package" "math-tolerances"))
-                             (:file "main" :depends-on ("package" "math-tolerances" "geometry-1d")))))
+                             (:file "geometry-2d" :depends-on ("package" "math-tolerances" "geometry-1d"))
+                             (:file "main" :depends-on ("package" "math-tolerances" "geometry-1d" "geometry-2d")))))
   :in-order-to ((test-op (test-op :vorm/tests)))
   :perform (load-op :after (op c)
                     (pushnew :vorm *features*)))
