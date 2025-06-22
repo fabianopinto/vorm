@@ -55,4 +55,14 @@
    ;; SVG visualization
    #:render-shape-to-svg
    #:render-shape-to-file
-   #:transform-segment-coordinates))
+   #:transform-segment-coordinates
+   
+   ;; Random number generation
+   #:generate-random-set
+   #:generate-random-line
+   #:generate-random-parallels
+   #:generate-random-shape
+   
+   ;; Random shape creation and SVG output
+   #:create-random-shape-svg
+   #:generate-shape-cli))

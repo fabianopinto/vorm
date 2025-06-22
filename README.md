@@ -12,6 +12,7 @@ VORM is designed as a lightweight library for working with geometric primitives 
 - **Mathematical Tolerance Functions**: Precise comparison of floating-point values for both linear and angular measurements
 - **Angle Normalization**: Utilities for working with angles and ensuring consistent representation
 - **Custom Tolerance Settings**: Macro support for temporarily adjusting tolerance thresholds
+- **Random Geometry Generation**: Tools for creating random sets, lines, parallels, and shapes
 
 #### 1D Geometry
 - **Segment Operations**: Create, compare and merge line segments with proper floating-point tolerance
@@ -45,12 +46,14 @@ vorm/
 │   ├── math-tolerances.lisp    # Mathematical tolerance functions
 │   ├── geometry-1d.lisp        # 1D geometric primitives (segments & lines)
 │   ├── geometry-2d.lisp        # 2D geometric primitives (parallels & shapes)
+│   ├── math-random.lisp        # Random geometry generation functions
 │   ├── visualization.lisp      # SVG visualization functionality
-│   └── main.lisp               # Main code (line geometry)
+│   └── main.lisp               # Main code and SVG output utilities
 ├── tests/                      # Tests
 │   ├── package.lisp            # Test package definitions
 │   ├── math-tolerances-tests.lisp  # Tests for math tolerance functions
 │   ├── geometry-1d-tests.lisp    # Tests for 1D geometry functionality
+│   ├── math-random-tests.lisp   # Tests for random generation functions
 │   └── main.lisp               # Main test code
 ├── build/                      # Build scripts
 │   ├── load-system.lisp        # Script to load the VORM system
@@ -236,7 +239,32 @@ For applications with large datasets, consider these optimizations:
 3. **Custom Tolerance**: For applications with specific angular precision needs, adjust `*ANGULAR-TOLERANCE*`
 4. **Parallels Reuse**: When possible, reuse parallels structures across angles for memory efficiency
 
-## SVG Visualization
+#### Random Shape Generation
+
+VORM provides a set of functions for generating random geometric structures:
+
+```lisp
+;; Generate a random set of numbers with minimum spacing
+(defvar random-points (vorm:generate-random-set :quantity 20 :min-spacing 5.0))
+
+;; Generate a random line with multiple segments
+(defvar random-line (vorm:generate-random-line :segment-count 5))
+
+;; Generate a random parallels structure with multiple lines
+(defvar random-parallels (vorm:generate-random-parallels :line-count 7))
+
+;; Generate a complete random shape with multiple parallels at different angles
+(defvar random-shape (vorm:generate-random-shape :parallel-count 4 :line-count 6))
+
+;; Generate a random shape and save directly to SVG
+(vorm:create-random-shape-svg "random-shape.svg" 
+                             :parallel-count 6 
+                             :line-count 10 
+                             :stroke "blue"
+                             :stroke-width 1.5)
+```
+
+#### SVG Visualization
 
 VORM includes functionality to render shapes to SVG format, making it easy to visualize your geometric structures.
 

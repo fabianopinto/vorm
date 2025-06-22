@@ -8,7 +8,7 @@
 
 (defsystem :vorm
   :name "vorm"
-  :version "0.4.0"
+  :version "0.5.0"
   :description "Common Lisp library for shape structures optimized for pattern recognition, featuring precise mathematical tolerances, 1D and 2D geometry primitives."
   :author "Fabiano Pinto <fabiano.pinto@gmail.com>"
   :license "MIT"
@@ -19,6 +19,7 @@
                 :components ((:file "package")
                              (:file "math-tolerances" :depends-on ("package"))
                              (:file "geometry-1d" :depends-on ("package" "math-tolerances"))
+                             (:file "math-random" :depends-on ("package" "math-tolerances" "geometry-1d"))
                              (:file "geometry-2d" :depends-on ("package" "math-tolerances" "geometry-1d"))
                              (:file "visualization" :depends-on ("package" "math-tolerances" "geometry-1d" "geometry-2d"))
                              (:file "main" :depends-on ("package" "math-tolerances" "geometry-1d" "geometry-2d" "visualization")))))
@@ -36,5 +37,6 @@
                              (:file "main" :depends-on ("package"))
                              (:file "math-tolerances-tests" :depends-on ("package" "main"))
                              (:file "geometry-1d-tests" :depends-on ("package" "main"))
-                             (:file "visualization-tests" :depends-on ("package" "main")))))
+                             (:file "visualization-tests" :depends-on ("package" "main"))
+                             (:file "math-random-tests" :depends-on ("package" "main")))))
   :perform (test-op (o c) (funcall (intern "RUN!" :fiveam) :vorm-tests)))
