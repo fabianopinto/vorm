@@ -1,6 +1,6 @@
 # VORM
 
-A minimal Common Lisp project focused on line-based geometry functionality. Built using SBCL, ASDF, and FiveAM test framework.
+A minimal Common Lisp project focused on line-based geometry functionality. Built using SBCL, ASDF, and FiveAM test framework. Current version: 0.5.0.
 
 ## Project Overview
 
@@ -34,8 +34,11 @@ VORM is designed as a lightweight library for working with geometric primitives 
 
 ## Requirements
 
-- [SBCL (Steel Bank Common Lisp)](https://www.sbcl.org/)
+- [SBCL (Steel Bank Common Lisp)](https://www.sbcl.org/) - For development and building the standalone executable
 - [Quicklisp](https://www.quicklisp.org/beta/) (for dependency management)
+- External Dependencies:
+  - alexandria - Common Lisp utility library
+  - fiveam - Testing framework (for running tests only)
 
 ## Project Structure
 
@@ -63,12 +66,25 @@ vorm/
 
 ## Installation
 
-1. Clone this repository
-2. Ensure Quicklisp is installed and set up properly
-3. Add this project to your local projects:
+1. Clone this repository:
 
 ```bash
-ln -s /path/to/vorm ~/quicklisp/local-projects/
+git clone https://github.com/fabianopinto/vorm.git
+cd vorm
+```
+
+2. Ensure SBCL and Quicklisp are installed and set up properly
+
+3. Install dependencies:
+
+```bash
+make deps
+```
+
+4. Alternatively, add this project to your local Quicklisp projects:
+
+```bash
+ln -s "$(pwd)" ~/quicklisp/local-projects/vorm
 ```
 
 ## Usage
@@ -87,6 +103,9 @@ make check
 
 # Run the test suite
 make test
+
+# Build a standalone binary executable
+make binary
 ```
 
 ### Running the VORM tests
@@ -129,14 +148,13 @@ This will load the system, run the tests, and report the results.
 (defvar line (vorm:make-line s1 s2))
 ;; line will contain one segment from 1.0 to 7.0 since s1 and s2 overlap
 
-;; Adding segments to a line (automatically merges overlapping segments)
-;; Note: line-add-segments takes a list of segments
-(vorm:line-add-segments line (list (vorm:make-segment 10.0 15.0)))
-;; line now contains two segments: [1.0,7.0] and [10.0,15.0]
+;; Using lines-merge to merge two lines (automatically merges overlapping segments)
+(defvar merged-line (vorm:lines-merge line (vorm:make-line (vorm:make-segment 10.0 15.0))))
+;; merged-line now contains two segments: [1.0,7.0] and [10.0,15.0]
 
-;; Adding multiple segments at once
-(vorm:line-add-segments line (list segment1 segment2 segment3))
-;; Overlapping segments are automatically merged
+;; Creating a new line with multiple segments at once
+(defvar combined-line (vorm:make-line segment1 segment2 segment3))
+;; Overlapping segments are automatically merged during creation
 
 ;; Creating a parallels structure (set of parallel lines in 2D)
 (defvar p (vorm:make-parallels (cons 1.0 line1) (cons 2.0 line2)))
@@ -264,9 +282,47 @@ VORM provides a set of functions for generating random geometric structures:
                              :stroke-width 1.5)
 ```
 
+#### Standalone Executable
+
+VORM includes functionality to build a standalone executable for generating random shapes from the command line:
+
+```bash
+# Build the executable
+make binary
+
+# Run the executable (shows usage information)
+./vorm-shape-gen
+
+# Generate a random shape
+./vorm-shape-gen output.svg
+
+# Customize the shape generation
+./vorm-shape-gen output.svg --parallel-count 7 --line-count 15 --stroke "blue"
+```
+
+Command-line options:
+
+```
+--parallel-count N      Number of parallels at different angles
+--line-count N          Number of lines per parallel
+--segment-count N       Number of segments per line
+--lower-limit X         Lower coordinate boundary
+--upper-limit X         Upper coordinate boundary
+--position-min-spacing X Minimum spacing between line positions
+--segment-min-spacing X Minimum segment size and spacing
+--width N               Width of the output SVG
+--height N              Height of the output SVG
+--stroke COLOR          Line color (e.g., "blue", "#ff0000")
+--stroke-width N        Line thickness
+```
+
 #### SVG Visualization
 
 VORM includes functionality to render shapes to SVG format, making it easy to visualize your geometric structures.
+
+![Sample Shape](/output.svg)
+
+*Above: A sample shape generated using the VORM library*
 
 ### Basic SVG Visualization
 

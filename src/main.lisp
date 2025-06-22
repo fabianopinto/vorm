@@ -1,5 +1,3 @@
-;;;; main.lisp - Main functionality for the VORM system
-
 (in-package :vorm)
 
 ;;;-----------------------------------------------------------------------------
@@ -7,17 +5,17 @@
 ;;;-----------------------------------------------------------------------------
 
 (defun create-random-shape-svg (filename &key 
-                                       (parallel-count 5)
-                                       (line-count 10) 
-                                       (lower-limit 0.0)
-                                       (upper-limit 1000.0)
-                                       (position-min-spacing 20.0)
-                                       (segment-count 5)
-                                       (segment-min-spacing 20.0)
-                                       (width 800)
-                                       (height 800)
-                                       (stroke "black")
-                                       (stroke-width 1))
+                                  (parallel-count 5)
+                                  (line-count 10) 
+                                  (lower-limit 0.0)
+                                  (upper-limit 1000.0)
+                                  (position-min-spacing 20.0)
+                                  (segment-count 5)
+                                  (segment-min-spacing 20.0)
+                                  (width 800)
+                                  (height 800)
+                                  (stroke "black")
+                                  (stroke-width 1))
   "Create a random shape and save it as an SVG file.
    
    Parameters:
@@ -31,7 +29,7 @@
    - segment-min-spacing: Minimum segment size and spacing (default: 20.0)
    - width: Width of the output SVG (default: 800)
    - height: Height of the output SVG (default: 800)
-   - stroke: Line color (default: "black")
+   - stroke: Line color (default: \"black\")
    - stroke-width: Line thickness (default: 1)
    
    Returns:
@@ -39,20 +37,20 @@
   
   ;; Generate a random shape with the specified parameters
   (let ((shape (generate-random-shape :parallel-count parallel-count
-                                    :line-count line-count
-                                    :lower-limit lower-limit
-                                    :upper-limit upper-limit
-                                    :position-min-spacing position-min-spacing
-                                    :segment-count segment-count
-                                    :segment-min-spacing segment-min-spacing)))
+                                     :line-count line-count
+                                     :lower-limit lower-limit
+                                     :upper-limit upper-limit
+                                     :position-min-spacing position-min-spacing
+                                     :segment-count segment-count
+                                     :segment-min-spacing segment-min-spacing)))
     
-    ;; Render the shape to an SVG file
+    ;; Render the shape to an SVG file and return filename on success
     (render-shape-to-file shape filename
-                          :width width
-                          :height height
-                          :auto-viewbox t
-                          :stroke stroke
-                          :stroke-width stroke-width)))
+                         :width width
+                         :height height
+                         :auto-viewbox t
+                         :stroke stroke
+                         :stroke-width stroke-width)))
 
 ;;;-----------------------------------------------------------------------------
 ;;; Command Line Interface
@@ -65,54 +63,61 @@
    - args: List of command-line arguments
    
    Usage examples:
-   - (generate-shape-cli '("/path/to/output.svg"))
-   - (generate-shape-cli '("/path/to/output.svg" "--parallel-count" "7"))"
+   - (generate-shape-cli (list \"output.svg\"))
+   - (generate-shape-cli (list \"output.svg\" \"--parallel-count\" \"7\"))"
   
   (let ((filename (first args))
         (options nil))
     
-    ;; Parse command line arguments
+    ;; Parse command line arguments and collect keyword options in proper order
     (loop for i from 1 below (length args) by 2
           for key = (nth i args)
           for val = (nth (1+ i) args)
           when (and key val)
           do (cond ((string= key "--parallel-count") 
-                    (push (cons :parallel-count (parse-integer val)) options))
+                    (setf options (append options (list :parallel-count (parse-integer val)))))
                    ((string= key "--line-count") 
-                    (push (cons :line-count (parse-integer val)) options))
+                    (setf options (append options (list :line-count (parse-integer val)))))
                    ((string= key "--segment-count") 
-                    (push (cons :segment-count (parse-integer val)) options))
+                    (setf options (append options (list :segment-count (parse-integer val)))))
                    ((string= key "--lower-limit") 
-                    (push (cons :lower-limit (read-from-string val)) options))
+                    (setf options (append options (list :lower-limit (read-from-string val)))))
                    ((string= key "--upper-limit") 
-                    (push (cons :upper-limit (read-from-string val)) options))
+                    (setf options (append options (list :upper-limit (read-from-string val)))))
                    ((string= key "--position-min-spacing") 
-                    (push (cons :position-min-spacing (read-from-string val)) options))
+                    (setf options (append options (list :position-min-spacing (read-from-string val)))))
                    ((string= key "--segment-min-spacing") 
-                    (push (cons :segment-min-spacing (read-from-string val)) options))
+                    (setf options (append options (list :segment-min-spacing (read-from-string val)))))
                    ((string= key "--width") 
-                    (push (cons :width (parse-integer val)) options))
+                    (setf options (append options (list :width (parse-integer val)))))
                    ((string= key "--height") 
-                    (push (cons :height (parse-integer val)) options))
+                    (setf options (append options (list :height (parse-integer val)))))
                    ((string= key "--stroke") 
-                    (push (cons :stroke val) options))
+                    (setf options (append options (list :stroke val))))
                    ((string= key "--stroke-width") 
-                    (push (cons :stroke-width (parse-integer val)) options))))
+                    (setf options (append options (list :stroke-width (parse-integer val))))))
     
     ;; Check for required filename
     (unless filename
       (error "Output filename is required"))
     
-    ;; Generate the shape with the specified options
-    (apply #'create-random-shape-svg filename options)))
+    ;; Generate the shape with the specified options and return the filename
+    (apply #'create-random-shape-svg filename options))))
 
 ;;;-----------------------------------------------------------------------------
 ;;; Example Usage
 ;;;-----------------------------------------------------------------------------
 
-;; Example:
-;; (create-random-shape-svg "/path/to/output.svg")
-;; (create-random-shape-svg "/path/to/output.svg" :parallel-count 7 :stroke "blue")
+;; Examples:
+;; Basic usage to create a random shape SVG:
+;; (create-random-shape-svg "output.svg")
 ;;
-;; Command-line usage:
-;; (generate-shape-cli '("output.svg" "--parallel-count" "7" "--stroke" "red"))
+;; Create a shape with custom parameters:
+;; (create-random-shape-svg "output.svg" :parallel-count 7 :stroke "blue" :stroke-width 2)
+;;
+;; Command-line interface usage (for binary executable):
+;; (generate-shape-cli (list "output.svg" "--parallel-count" "7" "--stroke" "red"))
+
+;;;-----------------------------------------------------------------------------
+;;; End of main.lisp
+;;;-----------------------------------------------------------------------------

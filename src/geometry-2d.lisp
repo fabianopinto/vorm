@@ -1,5 +1,3 @@
-;;;; geometry-2d.lisp - Two-dimensional geometric primitives for the VORM system
-
 (in-package :vorm)
 
 ;;;-----------------------------------------------------------------------------
@@ -277,3 +275,7 @@
           (setf (gethash normalized-angle (shape-angle-parallels shape)) parallels))))
   
   shape)
+
+;;;-----------------------------------------------------------------------------
+;;; End of geometry-2d.lisp
+;;;-----------------------------------------------------------------------------

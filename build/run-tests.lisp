@@ -1,4 +1,4 @@
-;;;; Script to run the VORM tests
+;;;; run-tests.lisp - Script to run the VORM tests
 
 (require :asdf)
 

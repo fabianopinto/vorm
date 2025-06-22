@@ -1,5 +1,3 @@
-;;;; visualization.lisp - Visualization utilities for the VORM system
-
 (in-package :vorm)
 
 ;;;-----------------------------------------------------------------------------
@@ -119,7 +117,7 @@
     (multiple-value-bind (min-x min-y max-x max-y)
         (when auto-viewbox (calculate-view-bounds shape))
       
-      (let* ((viewbox (when auto-viewbox (format nil "~A ~A ~A ~A" 
+      (let* ((viewbox (when auto-viewbox (format nil "~F ~F ~F ~F" 
                                                 min-x min-y 
                                                 (- max-x min-x) (- max-y min-y))))
              (cx (or center-x (if auto-viewbox (/ (+ min-x max-x) 2) (/ width 2))))
@@ -156,7 +154,7 @@
                                                    :center-x cx :center-y cy :scale s)
                   
                   ;; Generate and write SVG line element
-                  (write-string (format nil "  <line x1=\"~A\" y1=\"~A\" x2=\"~A\" y2=\"~A\" stroke=\"~A\" stroke-width=\"~A\" opacity=\"~A\" />~%" 
+                  (write-string (format nil "  <line x1=\"~F\" y1=\"~F\" x2=\"~F\" y2=\"~F\" stroke=\"~A\" stroke-width=\"~A\" opacity=\"~F\" />~%" 
                                      x1 y1 x2 y2 stroke stroke-width opacity)
                               svg))))
             (parallels-lines parallels)))
@@ -183,3 +181,7 @@
     (with-open-file (file filename :direction :output :if-exists :supersede :if-does-not-exist :create)
       (write-string svg-content file)))
   filename)
+
+;;;-----------------------------------------------------------------------------
+;;; End of visualization.lisp
+;;;-----------------------------------------------------------------------------

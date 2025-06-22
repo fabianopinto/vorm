@@ -1,8 +1,8 @@
-;;;; math-tolerances.lisp - Mathematical tolerance functions for the VORM system
-
 (in-package :vorm)
 
-;; Constants for comparison tolerance
+;;;-----------------------------------------------------------------------------
+;;; Tolerance Parameters
+;;;-----------------------------------------------------------------------------
 (defparameter *linear-tolerance* 1.0e-6
   "Tolerance used for linear value comparisons. Two values are considered
   equal if they differ by less than this amount.")
@@ -11,17 +11,23 @@
   "Tolerance used for angular value comparisons. Two angles are considered
   equal if they differ by less than this amount.")
 
-;; Constant for 2*pi to avoid repeated calculations
+;;;-----------------------------------------------------------------------------
+;;; Mathematical Constants
+;;;-----------------------------------------------------------------------------
 (defconstant +two-pi+ (* 2 pi)
   "The value of 2π, used for angle normalization and comparison.")
 
-;; Comparison functions
+;;;-----------------------------------------------------------------------------
+;;; Comparison Functions
+;;;-----------------------------------------------------------------------------
 (defun linear-equal (a b)
   "Compare two linear values with tolerance.
    Returns T if the absolute difference is less than *LINEAR-TOLERANCE*."
   (<= (abs (- a b)) *linear-tolerance*))
 
-;; Utility function to normalize an angle to [0, 2π)
+;;;-----------------------------------------------------------------------------
+;;; Angle Normalization
+;;;-----------------------------------------------------------------------------
 (defun normalize-angle (angle)
   "Normalize an angle to the range [0, 2π) using modular arithmetic.
    Optimized version using pre-calculated +TWO-PI+ constant."
@@ -30,7 +36,9 @@
         (+ mod-angle +two-pi+)
         mod-angle)))
 
-;; Angular comparison that incorporates normalization
+;;;-----------------------------------------------------------------------------
+;;; Angular Comparison
+;;;-----------------------------------------------------------------------------
 (defun angular-equal (angle1 angle2)
   "Compare two angular values with tolerance, after normalizing them to [0, 2π).
    Returns T if the normalized angles differ by less than *ANGULAR-TOLERANCE*
@@ -42,7 +50,9 @@
     (or (<= diff *angular-tolerance*)
         (<= (abs (- diff +two-pi+)) *angular-tolerance*))))
 
-;; Configuration macro for custom tolerance settings
+;;;-----------------------------------------------------------------------------
+;;; Custom Tolerance Configuration
+;;;-----------------------------------------------------------------------------
 (defmacro with-custom-tolerance ((linear-tol angular-tol) &body body)
   "Execute body with temporarily adjusted tolerance values.
    
@@ -51,4 +61,8 @@
      (linear-equal 0.0001 0.0002))  ; => T with the custom tolerance"
   `(let ((*linear-tolerance* ,linear-tol)
          (*angular-tolerance* ,angular-tol))
-     ,@body))
+      ,@body))
+
+;;;=============================================================================
+;;; End of math-tolerances.lisp
+;;;=============================================================================

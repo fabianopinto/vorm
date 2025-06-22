@@ -1,15 +1,14 @@
-;; math-random.lisp - Functions for generating random numbers with specific characteristics
-;;
-;; Copyright (c) 2025 Fabiano Pinto
-;; License: MIT
-
 (in-package :vorm)
 
+;;;-----------------------------------------------------------------------------
+;;; Random Set Generation
+;;;-----------------------------------------------------------------------------
+
 (defun generate-random-set (&key 
-                           (lower-limit 0.0)
-                           (upper-limit 1000.0)
-                           (quantity 10)
-                           (min-spacing 20.0))
+                          (lower-limit 0.0)
+                          (upper-limit 1000.0)
+                          (quantity 10)
+                          (min-spacing 20.0))
   "Generate a set of randomly distributed real numbers.
    
    Arguments:
@@ -23,7 +22,14 @@
    with at least min-spacing distance between any two numbers.
    
    Note: If the range (upper-limit - lower-limit) is too small to accommodate 
-   quantity numbers with min-spacing between them, the function will signal an error."
+   quantity numbers with min-spacing between them, the function will signal an error.
+   
+   Algorithm:
+   1. Calculate total minimum space: (1 + quantity) * min-spacing
+   2. Calculate total randomization interval: upper-limit - lower-limit - total-min-space
+   3. Generate the quantity random numbers in the total randomization interval
+   4. Sort the numbers
+   5. Add to each number in the set, counting i from 0: (1 + i) * min-spacing"
   
   ;; Validate input parameters
   (when (>= lower-limit upper-limit)
@@ -35,54 +41,35 @@
   (when (<= min-spacing 0)
     (error "Minimum spacing must be positive"))
   
-  ;; Check if the range can accommodate the requested quantity with minimum spacing
-  (let ((available-range (- upper-limit lower-limit))
-        (required-range (* (1- quantity) min-spacing)))
-    (when (< available-range required-range)
+  ;; Calculate the total minimum space needed
+  (let* ((total-min-space (* (1+ quantity) min-spacing))
+         (total-range (- upper-limit lower-limit)))
+    
+    ;; Check if the range can accommodate the requested quantity with minimum spacing
+    (when (< total-range total-min-space)
       (error "Range (~A) is too small to accommodate ~A numbers with minimum spacing of ~A"
-             available-range quantity min-spacing)))
-  
-  ;; Algorithm to generate random numbers with minimum spacing
-  (let ((result nil)
-        (attempts 0)
-        (max-attempts 1000))
+             total-range quantity min-spacing))
     
-    ;; Helper function to check if a new number maintains minimum spacing with existing numbers
-    (labels ((valid-spacing-p (number numbers)
-               (every (lambda (n) (>= (abs (- number n)) min-spacing)) numbers))
-             
-             ;; Generate a random number within the range
-             (generate-candidate ()
-               (+ lower-limit 
-                  (* (random 1.0) (- upper-limit lower-limit)))))
+    ;; Calculate the total randomization interval
+    (let* ((randomization-interval (- total-range total-min-space))
+           ;; Generate quantity random numbers in the randomization interval
+           (random-numbers (loop repeat quantity
+                                collect (* randomization-interval (random 1.0))))
+           ;; Sort the numbers
+           (sorted-numbers (sort random-numbers #'<))
+           ;; Add the minimum spacing to each number
+           (result (loop for number in sorted-numbers
+                         for i from 0
+                         collect (+ number lower-limit (* (1+ i) min-spacing)))))
       
-      ;; Generate the first number
-      (push (generate-candidate) result)
-      
-      ;; Generate subsequent numbers
-      (loop while (< (length result) quantity) do
-            (incf attempts)
-            
-            ;; Guard against infinite loops
-            (when (>= attempts max-attempts)
-              (error "Failed to generate set with required spacing after ~A attempts" max-attempts))
-            
-            (let ((candidate (generate-candidate)))
-              (when (and (> candidate lower-limit)
-                         (< candidate upper-limit)
-                         (valid-spacing-p candidate result))
-                (push candidate result)
-                ;; Reset attempts counter after successful addition
-                (setf attempts 0)))))
-    
-    ;; Return sorted results
-    (sort result #'<)))
+      ;; Return the result
+      result)))
 
 (defun generate-random-line (&key
-                           (lower-limit 0.0)
-                           (upper-limit 1000.0)
-                           (segment-count 5)
-                           (min-spacing 20.0))
+                          (lower-limit 0.0)
+                          (upper-limit 1000.0)
+                          (segment-count 5)
+                          (min-spacing 20.0))
   "Generate a random line composed of random segments.
    
    Arguments:
@@ -177,18 +164,18 @@
   ;; Create a new parallels structure
   (let ((parallels (make-parallels-internal)))
     
-    ;; Generate random positions for the lines
+    ;; Generate random positions for the lines with minimum spacing
     (let ((positions (generate-random-set :lower-limit lower-limit
-                                        :upper-limit upper-limit
-                                        :quantity line-count
-                                        :min-spacing position-min-spacing)))
+                                         :upper-limit upper-limit
+                                         :quantity line-count
+                                         :min-spacing position-min-spacing)))
       
       ;; For each position, create and add a random line
       (dolist (position positions)
         (let ((line (generate-random-line :lower-limit lower-limit
-                                        :upper-limit upper-limit
-                                        :segment-count segment-count
-                                        :min-spacing segment-min-spacing)))
+                                         :upper-limit upper-limit
+                                         :segment-count segment-count
+                                         :min-spacing segment-min-spacing)))
           
           ;; Add the line to the parallels structure at the current position
           (parallels-add-lines parallels (cons position line)))))
@@ -197,13 +184,13 @@
     parallels))
 
 (defun generate-random-shape (&key
-                             (parallel-count 5)
-                             (line-count 10)
-                             (lower-limit 0.0)
-                             (upper-limit 1000.0)
-                             (position-min-spacing 20.0)
-                             (segment-count 5)
-                             (segment-min-spacing 20.0))
+                            (parallel-count 5)
+                            (line-count 10)
+                            (lower-limit 0.0)
+                            (upper-limit 1000.0)
+                            (position-min-spacing 20.0)
+                            (segment-count 5)
+                            (segment-min-spacing 20.0))
   "Generate a random shape composed of parallel lines at different angles.
    
    Arguments:
@@ -244,21 +231,25 @@
       
       ;; Generate a set of random angles with minimum spacing
       (let ((angles (generate-random-set :lower-limit min-angle
-                                        :upper-limit max-angle
-                                        :quantity parallel-count
-                                        :min-spacing min-angle-spacing)))
+                                         :upper-limit max-angle
+                                         :quantity parallel-count
+                                         :min-spacing min-angle-spacing)))
         
         ;; For each angle, create a parallel structure
         (dolist (angle angles)
           (let ((parallels (generate-random-parallels :line-count line-count
-                                                     :lower-limit lower-limit
-                                                     :upper-limit upper-limit
-                                                     :position-min-spacing position-min-spacing
-                                                     :segment-count segment-count
-                                                     :segment-min-spacing segment-min-spacing)))
+                                                      :lower-limit lower-limit
+                                                      :upper-limit upper-limit
+                                                      :position-min-spacing position-min-spacing
+                                                      :segment-count segment-count
+                                                      :segment-min-spacing segment-min-spacing)))
             
             ;; Add the parallels structure to the shape at the current angle
             (shape-add-parallels shape angle parallels))))
       
       ;; Return the complete shape
       shape)))
+
+;;;-----------------------------------------------------------------------------
+;;; End of math-random.lisp
+;;;-----------------------------------------------------------------------------

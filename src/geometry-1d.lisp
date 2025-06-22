@@ -1,5 +1,3 @@
-;;;; geometry-1d.lisp - One-dimensional geometric primitives for the VORM system
-
 (in-package :vorm)
 
 ;;;-----------------------------------------------------------------------------
@@ -196,3 +194,7 @@
    (line-empty-p line) ;; => T if line has no segments"
   (declare (type line line))
   (null (line-segments line)))
+
+;;;-----------------------------------------------------------------------------
+;;; End of geometry-1d.lisp
+;;;-----------------------------------------------------------------------------

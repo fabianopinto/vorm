@@ -1,4 +1,4 @@
-;;;; Script to load the VORM system
+;;;; load-system.lisp - Script to load the VORM system
 
 (require :asdf)
 
