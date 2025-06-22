@@ -50,4 +50,9 @@
    
    ;; Shape operations
    #:shape-angles
-   #:shape-add-parallels))
+   #:shape-add-parallels
+   
+   ;; SVG visualization
+   #:render-shape-to-svg
+   #:render-shape-to-file
+   #:transform-segment-coordinates))

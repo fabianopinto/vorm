@@ -45,6 +45,7 @@ vorm/
 │   ├── math-tolerances.lisp    # Mathematical tolerance functions
 │   ├── geometry-1d.lisp        # 1D geometric primitives (segments & lines)
 │   ├── geometry-2d.lisp        # 2D geometric primitives (parallels & shapes)
+│   ├── visualization.lisp      # SVG visualization functionality
 │   └── main.lisp               # Main code (line geometry)
 ├── tests/                      # Tests
 │   ├── package.lisp            # Test package definitions
@@ -169,6 +170,25 @@ This will load the system, run the tests, and report the results.
 ;; the parallels are merged automatically:
 (vorm:shape-add-parallels s (+ (/ pi 4) 0.00001) p4)
 ;; The parallels at π/4 will now contain the lines from both p3 and p4
+
+;; Rendering shapes to SVG
+(defvar svg-content (vorm:render-shape-to-svg shape))
+;; Creates an SVG representation of the shape as a string
+
+;; Render directly to a file
+(vorm:render-shape-to-file shape "my-shape.svg" 
+                         :width 800 :height 600
+                         :stroke "blue" 
+                         :stroke-width 2)
+
+;; Customize appearance with additional options
+(vorm:render-shape-to-file shape "styled-shape.svg"
+                         :width 800
+                         :height 600
+                         :auto-viewbox t
+                         :stroke "blue"
+                         :stroke-width 2
+                         :opacity 0.7)
 ```
 
 ## Performance Characteristics
@@ -216,6 +236,44 @@ For applications with large datasets, consider these optimizations:
 3. **Custom Tolerance**: For applications with specific angular precision needs, adjust `*ANGULAR-TOLERANCE*`
 4. **Parallels Reuse**: When possible, reuse parallels structures across angles for memory efficiency
 
+## SVG Visualization
+
+VORM includes functionality to render shapes to SVG format, making it easy to visualize your geometric structures.
+
+### Basic SVG Visualization
+
+```lisp
+;; Create a simple shape
+(defvar s (vorm:make-shape (cons 0.0 (vorm:make-parallels (cons 0.0 (vorm:make-line (vorm:make-segment 0.0 100.0)))))))
+
+;; Render the shape to SVG format
+(defvar svg (vorm:render-shape-to-svg s :width 500 :height 500))
+
+;; Render directly to a file
+(vorm:render-shape-to-file s "my-shape.svg")
+```
+
+### Rendering Options
+
+```lisp
+;; Customize the appearance with advanced options
+(vorm:render-shape-to-file s "styled-shape.svg" 
+                          :width 800 
+                          :height 600 
+                          :auto-viewbox t
+                          :stroke "blue" 
+                          :stroke-width 2 
+                          :opacity 0.8)
+```
+
+### SVG Visualization Features
+
+- **Automatic Viewbox Calculation**: Automatically determines the optimal viewBox for your shapes
+- **Coordinate Transformations**: Handles all transformations from model coordinates to SVG coordinates
+- **Styling Options**: Customize stroke color, width, opacity, and other SVG attributes
+- **Direct File Output**: Render shapes directly to SVG files with a single function call
+- **Performance Optimized**: Streamlined implementation with minimal function overhead
+
 ## Development
 
 ### Project Organization
@@ -239,20 +297,6 @@ For applications with large datasets, consider these optimizations:
 
 3. Add corresponding tests
    - Write tests before or alongside implementation
-   - Ensure each function has at least basic test coverage
-
-4. Update ASDF system definition
-   - If adding new files, add them to `vorm.asd` with proper dependencies
-
-5. Run tests frequently
-   ```bash
-   make test
-   ```
-
-6. Check for warnings
-   ```bash
-   make check
-   ```
 
 ## License
 

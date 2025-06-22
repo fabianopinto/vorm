@@ -172,23 +172,26 @@
    (make-shape)                                          ;; Create empty shape
    (make-shape (cons 0.0 parallels1) (cons pi parallels2)) ;; Create with direct angle-parallels pairs"
   ;; Create an empty shape structure
-  (let ((s (make-shape-internal)))
-    (setf (shape-angle-parallels s) (make-hash-table :test #'equal))
+  (let ((shape (make-shape-internal)))
+    (setf (shape-angle-parallels shape) (make-hash-table :test #'equal))
     
     ;; Add initial angle-parallels pairs if provided, filtering out empty parallels
     (when angle-parallels-pairs
       ;; Filter out pairs with empty parallels
       (let ((filtered-pairs (remove-if 
-                             (lambda (pair)
-                               (let ((parallels (cdr pair)))
-                                 (zerop (hash-table-count (parallels-lines parallels)))))
-                             angle-parallels-pairs)))
+                              (lambda (pair)
+                                (let ((parallels (cdr pair)))
+                                  (zerop (hash-table-count (parallels-lines parallels)))))
+                              angle-parallels-pairs)))
         
         ;; Add each pair if we have non-empty parallels
         (when filtered-pairs
           (dolist (pair filtered-pairs)
             (destructuring-bind (angle . parallels) pair
-              (shape-add-parallels s angle parallels))))))))
+              (shape-add-parallels shape angle parallels))))))
+    
+    ;; Return the shape object
+    shape))
 
 (defun shape-angles (shape)
   "Get a list of all angles in the shape that have parallels.
