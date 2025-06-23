@@ -15,6 +15,8 @@
   :components ((:file "package")
                (:file "utils"
                 :depends-on ("package"))
+               (:file "tolerance"
+                :depends-on ("package"))
                (:file "shapes"
                 :depends-on ("package" "utils"))
                (:file "transformations"
@@ -26,7 +28,7 @@
                (:file "interpreter"
                 :depends-on ("package" "utils" "shapes" "transformations" "grammar" "parser"))
                (:file "main" 
-                :depends-on ("package" "utils" "shapes" "transformations" "grammar" "parser" "interpreter")))
+                :depends-on ("package" "utils" "tolerance" "shapes" "transformations" "grammar" "parser" "interpreter")))
   :in-order-to ((asdf:test-op (asdf:test-op "vorm/test"))))
 
 (asdf:defsystem "vorm/test"
@@ -38,6 +40,7 @@
   :pathname "tests"
   :components ((:file "package")
                (:file "main" :depends-on ("package"))
+               (:file "tolerance-tests" :depends-on ("package" "main"))
                (:file "shapes-tests" :depends-on ("package" "main"))
                (:file "transformations-tests" :depends-on ("package" "main"))
                (:file "grammar-tests" :depends-on ("package" "main"))

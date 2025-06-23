@@ -21,6 +21,7 @@
     ;; Print a summary of results
     (format t "~&~%=== Test Summary ===")
     (format t "~&Running all vorm test suites...")
+    (format t "~&- Tolerance tests")
     (format t "~&- Shape tests")
     (format t "~&- Grammar tests")
     (format t "~&- Transformation tests")
