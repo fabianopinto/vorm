@@ -22,7 +22,16 @@
            #:point-distance
            #:degrees-to-radians
            #:radians-to-degrees
-           
+
+           ;; Tolerance parameters and functions
+           #:*linear-tolerance*
+           #:*angular-tolerance*
+           #:+two-pi+
+           #:linear-equal
+           #:normalize-angle
+           #:angular-equal
+           #:with-custom-tolerance
+
            ;; Basic Shape classes and functions
            #:shape
            #:shape-id
